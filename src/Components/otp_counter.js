@@ -12,13 +12,15 @@ class Otp_counter extends React.Component {
   }
 
   componentDidMount = () => {
-    this.setState({counter: 60});
+    let {counter} = this.props;
+
+    this.setState({counter: counter || 60});
     this.run_counter();
   };
 
-  componentWillUnmount = ()=>{
+  componentWillUnmount = () => {
     clearInterval(this.counting);
-  }
+  };
 
   run_counter = () => {
     this.counting = setInterval(() => {
@@ -51,6 +53,7 @@ class Otp_counter extends React.Component {
           </Fr_text>
         ) : (
           <Text_btn
+            accent
             text="Resend"
             action={() => {
               resend_otp && resend_otp();

@@ -104,7 +104,7 @@ class Login extends React.Component {
   };
 
   render = () => {
-    let {route} = this.props;
+    let {route, navigation} = this.props;
     let new_user = route?.params?.new_user || this.state.new_user;
     let {email, password, reveal_password, loading, country_code} = this.state;
 

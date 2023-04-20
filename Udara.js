@@ -47,6 +47,7 @@ import Home from './src/Screens/Home';
 import Account_verification from './src/Screens/Account_verification';
 import Verification_details from './src/Screens/veirification_details';
 import Verification_requests from './src/Screens/verification_requests';
+import Forgot_password from './src/Screens/forgot_password';
 
 const User = React.createContext();
 
@@ -99,6 +100,7 @@ class App_entry extends React.Component {
         <Auth_stack.Screen name="registration" component={Registration} />
         <Auth_stack.Screen name="verification" component={Verification} />
         <Auth_stack.Screen name="login" component={Login} />
+        <Auth_stack.Screen name="forgot_password" component={Forgot_password} />
         <Auth_stack.Screen name="congratulation" component={Congratulation} />
       </Auth_stack.Navigator>
     );
