@@ -300,6 +300,7 @@ class Wallet extends React.Component {
                         justifyContent: 'space-between',
                         paddingTop: wp(2.8),
                         paddingBottom: hp(1.4),
+                        alignItems: 'center',
                       }}>
                       <TouchableWithoutFeedback onPress={this.sell}>
                         <View
@@ -316,7 +317,7 @@ class Wallet extends React.Component {
                         </View>
                       </TouchableWithoutFeedback>
                       <Icon
-                        icon={require('../../android/app/src/main/assets/Icons/currency_convert_icon.png')}
+                        icon={require('../../android/app/src/main/assets/Icons/transfer.png')}
                         style={{height: wp(13), width: wp(13)}}
                       />
                       <TouchableWithoutFeedback

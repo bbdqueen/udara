@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Admin_id, emitter} from '../../Udara';
 import {hp, wp} from '../utils/dimensions';
-import {post_request} from '../utils/services';
+import {domain, post_request} from '../utils/services';
 import toast from '../utils/toast';
 import Bg_view from './Bg_view';
 import Cool_modal from './cool_modal';
@@ -146,7 +146,8 @@ class Onsale_currency extends React.Component {
     let {user, navigation} = this.props;
     if (!onsale) return null;
 
-    let {to_currency, minimum_sell_value, icon, value, rate, seller} = onsale;
+    let {to_currency, minimum_sell_value, icon, value, flag, rate, seller} =
+      onsale;
 
     return (
       <Bg_view
@@ -191,6 +192,10 @@ class Onsale_currency extends React.Component {
               horizontal
               style={{justifyContent: 'space-between', alignItems: 'center'}}>
               <Bg_view no_bg horizontal style={{alignItems: 'center'}}>
+                <Icon
+                  icon={{uri: `${domain}/Icons/${flag || 'flag_icon.png'}`}}
+                  style={{marginRight: 5}}
+                />
                 {minimum_sell_value && minimum_sell_value !== value ? (
                   <Fr_text bold size={wp(4.5)} style={{maxWidth: wp(50)}}>
                     {`${Number(minimum_sell_value).toFixed(2)} `}

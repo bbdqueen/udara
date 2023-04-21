@@ -30,7 +30,7 @@ const Icon = ({icon, action, text, style}) => {
           }}>
           <Image
             source={
-              icon && icon.uri
+              icon?.uri
                 ? {
                     uri: icon?.uri,
                     height: style.height || wp(5.5),

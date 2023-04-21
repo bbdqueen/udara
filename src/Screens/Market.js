@@ -17,7 +17,7 @@ import Text_btn from '../Components/Text_btn';
 import {filter} from '../Components/transactions';
 import {hp, wp} from '../utils/dimensions';
 import {capitalise} from '../utils/functions';
-import {post_request} from '../utils/services';
+import {domain, post_request} from '../utils/services';
 
 let currencies_alignment = new Array(
   'dollar',
@@ -191,6 +191,11 @@ class Market extends React.Component {
                             paddingHorizontal: 5,
                           }}>
                           <Text_btn
+                            icon={{
+                              uri: `${domain}/Icons/${
+                                currency_?.flag || 'flag_icon.png'
+                              }`,
+                            }}
                             key={currency_._id}
                             text={currency_.name}
                             accent={currency_.name === currency}
