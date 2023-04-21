@@ -39,7 +39,7 @@ class Verify_email extends React.Component {
     let {email} = route.params;
     let {code} = this.state;
 
-    let res = await post_request('verify_email', {email, code});
+    let res = await post_request('verify_email', {email, code: code.trim()});
 
     if (res?.user) {
       navigation.navigate('reset_password', {email, user: res.user});
@@ -125,7 +125,7 @@ class Verify_email extends React.Component {
                 </Bg_view>
                 <Stretched_button
                   title="verify"
-                  disabled={!valid_code}
+                  disabled={!valid_code || !code}
                   loading={loading}
                   style={{marginHorizontal: 0, marginTop: hp(4)}}
                   action={this.verify}

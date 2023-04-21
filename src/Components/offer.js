@@ -1,5 +1,9 @@
 import React from 'react';
-import {TouchableWithoutFeedback, View} from 'react-native';
+import {
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {hp, wp} from '../utils/dimensions';
 import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
@@ -19,6 +23,7 @@ import Message from './message';
 import Offer_details from './offer_details';
 import Line from './line';
 import Confirm_remove_offer from './confirm_remove_offer';
+import Status_info from './status_info';
 
 class Offer extends React.Component {
   constructor(props) {
@@ -210,6 +215,8 @@ class Offer extends React.Component {
     navigation.navigate('dispute', {offer, onsale, user, admin_in_dispute});
   };
 
+  toggle_status_info = () => this.status_info?.toggle();
+
   toggle_remove_offer = () => this.remove?.toggle();
 
   aday = 60 * 60 * 24 * 1000;
@@ -233,6 +240,7 @@ class Offer extends React.Component {
       admin_in_dispute,
       message,
       navigation,
+      full_width,
     } = this.props;
     if (!offer) return null;
 
@@ -247,6 +255,8 @@ class Offer extends React.Component {
 
     let is_seller = seller._id === user._id;
 
+    let status_info = status__ || status || 'pending';
+
     return (
       <TouchableWithoutFeedback onPress={this.toggle_offer_buttons}>
         <View>
@@ -257,7 +267,8 @@ class Offer extends React.Component {
               margin: wp(2.8),
               marginTop: wp(1.4),
               borderRadius: wp(4),
-              maxWidth: wp(),
+              width: full_width ? null : wp(80),
+              maxWidth: full_width ? wp() : null,
             }}>
             <Bg_view horizontal style={{justifyContent: 'space-between'}}>
               <Bg_view style={{flex: 4, flexDirection: 'row'}}>
@@ -277,9 +288,25 @@ class Offer extends React.Component {
               </Bg_view>
               <Bg_view style={{flex: 4, alignItems: 'flex-end'}}>
                 <Bg_view style={{alignItems: 'flex-end', flexWrap: 'wrap'}}>
-                  <Fr_text capitalise italic size={wp(3.5)} accent>
-                    {status__ || status || 'pending'}
-                  </Fr_text>
+                  <TouchableNativeFeedback
+                    onPress={() => this.toggle_status_info()}>
+                    <View>
+                      <Bg_view
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Icon
+                          icon={require('../../android/app/src/main/assets/Icons/info.png')}
+                        />
+                        <Fr_text
+                          style={{marginLeft: 2.5}}
+                          capitalise
+                          italic
+                          size={wp(3.5)}
+                          accent>
+                          {status_info}
+                        </Fr_text>
+                      </Bg_view>
+                    </View>
+                  </TouchableNativeFeedback>
                   <Fr_text bold size={wp(4.5)}>
                     {`${amount * offer_rate} NGN`}
                   </Fr_text>
@@ -586,6 +613,13 @@ class Offer extends React.Component {
               offer={offer}
               toggle={this.toggle_remove_offer}
               proceed={this.remove_offer}
+            />
+          </Cool_modal>
+
+          <Cool_modal ref={status_info => (this.status_info = status_info)}>
+            <Status_info
+              status={status_info}
+              toggle={this.toggle_status_info}
             />
           </Cool_modal>
         </View>

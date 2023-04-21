@@ -36,7 +36,9 @@ class Forgot_password extends React.Component {
     let {navigation} = this.props;
     let {email} = this.state;
 
-    let res = await post_request('forgot_password', {email});
+    let res = await post_request('forgot_password', {
+      email: email.toLowerCase().trim(),
+    });
 
     if (res?.user) {
       navigation.navigate('verify_email', {email: res.email, user: res.user});

@@ -293,6 +293,7 @@ class Wallet extends React.Component {
                       shadowColor: '#000',
                       borderRadius: wp(4),
                       margin: wp(2.8),
+                      marginBottom: hp(4),
                     }}>
                     <Bg_view
                       horizontal

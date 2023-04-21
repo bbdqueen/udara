@@ -52,6 +52,7 @@ class Buyer_offers extends React.Component {
                         offer={offer.offer}
                         onsale={offer.onsale}
                         user={user}
+                        full_width
                         navigation={navigation}
                         key={offer._id}
                       />

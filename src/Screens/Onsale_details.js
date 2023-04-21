@@ -78,7 +78,7 @@ class Onsale_details extends React.Component {
     if (res) {
       let {my_offers} = this.state;
       my_offers = new Array(res, ...my_offers);
-      this.setState({my_offers, amount: 0, sending_offer: false});
+      this.setState({my_offers, amount: onsale.value, sending_offer: false});
     } else {
       toast("Couldn't place offer at this time.");
       this.setState({sending_offer: false});

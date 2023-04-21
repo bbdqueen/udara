@@ -177,6 +177,7 @@ class Login extends React.Component {
                 />
                 <Stretched_button
                   title="login"
+                  disabled={!email || !password}
                   loading={loading}
                   style={{marginHorizontal: 0, marginTop: hp(2)}}
                   action={this.login}

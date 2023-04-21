@@ -25,7 +25,7 @@ class Offer_details extends React.Component {
           alignItems: 'center',
           ...style,
         }}>
-        <Fr_text>{text}</Fr_text>
+        <Fr_text centralise>{text}</Fr_text>
       </Bg_view>
     );
   }
