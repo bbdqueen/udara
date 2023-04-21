@@ -62,16 +62,21 @@ class Notification extends React.Component {
           padding: wp(5.6),
           borderBottomWidth: 0.5,
           borderBottomColor: '#aaa',
+          width: wp(99.4),
         }}>
         <Bg_view
           horizontal
           style={{justifyContent: 'space-between', marginBottom: hp(1)}}>
-          <Fr_text bold capitalise>
-            {title}
-          </Fr_text>
-          <Fr_text size={wp(3)} color="#999">
-            {this.format_timestamp(created)}
-          </Fr_text>
+          <Bg_view style={{flex: 6}}>
+            <Fr_text bold capitalise>
+              {title}
+            </Fr_text>
+          </Bg_view>
+          <Bg_view style={{flex: 4, alignItems: 'flex-end'}}>
+            <Fr_text size={wp(3)} color="#999">
+              {this.format_timestamp(created)}
+            </Fr_text>
+          </Bg_view>
         </Bg_view>
         {this.render_data()}
 

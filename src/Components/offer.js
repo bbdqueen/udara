@@ -260,24 +260,30 @@ class Offer extends React.Component {
               maxWidth: wp(),
             }}>
             <Bg_view horizontal style={{justifyContent: 'space-between'}}>
-              <Icon icon={flag} style={{height: wp(10), width: wp(10)}} />
-              <Bg_view style={{marginLeft: wp(1.4)}}>
-                <Fr_text bold size={wp(4.5)}>
-                  {`${amount} ${currency}`}
-                </Fr_text>
-                <Fr_text size={wp(3.5)}>{`x ${offer_rate}`}</Fr_text>
+              <Bg_view style={{flex: 4, flexDirection: 'row'}}>
+                <Icon icon={flag} style={{height: wp(10), width: wp(10)}} />
+                <Bg_view style={{marginLeft: wp(1.4)}}>
+                  <Fr_text bold size={wp(4.5)}>
+                    {`${amount} ${currency}`}
+                  </Fr_text>
+                  <Fr_text size={wp(3.5)}>{`x ${offer_rate}`}</Fr_text>
+                </Bg_view>
               </Bg_view>
-              <Icon
-                icon={require('../../android/app/src/main/assets/Icons/exchange_chat_icon.png')}
-                style={{marginHorizontal: wp(2.8)}}
-              />
-              <Bg_view style={{alignItems: 'flex-end', flexWrap: 'wrap'}}>
-                <Fr_text capitalise italic size={wp(3.5)} accent>
-                  {status__ || status || 'pending'}
-                </Fr_text>
-                <Fr_text bold size={wp(4.5)}>
-                  {`${amount * offer_rate} NGN`}
-                </Fr_text>
+              <Bg_view style={{flex: 2, alignItems: 'center'}}>
+                <Icon
+                  icon={require('../../android/app/src/main/assets/Icons/exchange_chat_icon.png')}
+                  style={{marginHorizontal: wp(2.8)}}
+                />
+              </Bg_view>
+              <Bg_view style={{flex: 4, alignItems: 'flex-end'}}>
+                <Bg_view style={{alignItems: 'flex-end', flexWrap: 'wrap'}}>
+                  <Fr_text capitalise italic size={wp(3.5)} accent>
+                    {status__ || status || 'pending'}
+                  </Fr_text>
+                  <Fr_text bold size={wp(4.5)}>
+                    {`${amount * offer_rate} NGN`}
+                  </Fr_text>
+                </Bg_view>
               </Bg_view>
             </Bg_view>
 

@@ -10,8 +10,11 @@ import Bg_view from '../Components/Bg_view';
 import Fr_text from '../Components/Fr_text';
 import Icon from '../Components/Icon';
 import Listfooter from '../Components/listfooter';
+import Loadindicator from '../Components/load_indicator';
+import Notification from '../Components/notification';
 import Payment from '../Components/payment';
 import {hp, wp} from '../utils/dimensions';
+import {post_request} from '../utils/services';
 
 class Home extends React.Component {
   constructor(props) {
@@ -19,7 +22,7 @@ class Home extends React.Component {
     this.state = {new_txs: new Array()};
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     this.new_transaction = tx => {
       let {new_txs} = this.state;
       new_txs.push(tx._id);
@@ -36,6 +39,12 @@ class Home extends React.Component {
 
     emitter.listen('new_transaction', this.new_transaction);
     emitter.listen('transaction_mounted', this.transaction_mounted);
+
+    let notifications = await post_request(`notifications/${this.user._id}`, {
+      unseen: true,
+      limit: 5,
+    });
+    this.setState({notifications});
   };
 
   componentWillUnmount = () => {
@@ -58,11 +67,12 @@ class Home extends React.Component {
 
   render() {
     let {navigation} = this.props;
-    let {new_txs} = this.state;
+    let {new_txs, notifications} = this.state;
 
     return (
       <User.Consumer>
         {user => {
+          this.user = user;
           let {wallet, username, _id} = user;
           let {fav_currency, profits} = wallet;
 
@@ -182,6 +192,42 @@ class Home extends React.Component {
                       </Bg_view>
                     </View>
                   </TouchableWithoutFeedback>
+
+                  <Bg_view>
+                    {notifications?.length ? (
+                      <Fr_text style={{marginTop: hp(4), marginLeft: wp(5.6)}}>
+                        Recent Notifications
+                      </Fr_text>
+                    ) : null}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}>
+                      <Bg_view
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        {notifications ? (
+                          notifications.length ? (
+                            notifications.map(notification => (
+                              <Bg_view key={notification._id}>
+                                <Notification
+                                  notification={notification}
+                                  navigation={navigation}
+                                  user={user}
+                                />
+                              </Bg_view>
+                            ))
+                          ) : null
+                        ) : (
+                          <Bg_view style={{alignItems: 'center'}} flex>
+                            <Loadindicator />
+                          </Bg_view>
+                        )}
+                      </Bg_view>
+                    </ScrollView>
+                  </Bg_view>
+
                   <Bg_view style={{paddingHorizontal: wp(5.6)}}>
                     <Bg_view no_bg style={{marginTop: hp(1)}}>
                       <Fr_text accent bold size={wp(5.6)}>
