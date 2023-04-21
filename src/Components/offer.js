@@ -616,7 +616,9 @@ class Offer extends React.Component {
             />
           </Cool_modal>
 
-          <Cool_modal ref={status_info => (this.status_info = status_info)}>
+          <Cool_modal
+            center
+            ref={status_info => (this.status_info = status_info)}>
             <Status_info
               status={status_info}
               toggle={this.toggle_status_info}
