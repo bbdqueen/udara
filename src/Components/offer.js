@@ -17,6 +17,8 @@ import Bank_transfer from './bank_transfer';
 import Online_registration from './online_registration';
 import Message from './message';
 import Offer_details from './offer_details';
+import Line from './line';
+import Confirm_remove_offer from './confirm_remove_offer';
 
 class Offer extends React.Component {
   constructor(props) {
@@ -208,6 +210,8 @@ class Offer extends React.Component {
     navigation.navigate('dispute', {offer, onsale, user, admin_in_dispute});
   };
 
+  toggle_remove_offer = () => this.remove?.toggle();
+
   aday = 60 * 60 * 24 * 1000;
 
   render = () => {
@@ -308,6 +312,7 @@ class Offer extends React.Component {
               )}
             </Bg_view>
 
+            <Line />
             {no_foot ? null : status === 'in-dispute' ? (
               <Text_btn
                 text="in-dispute"
@@ -331,14 +336,22 @@ class Offer extends React.Component {
                       flexWrap: 'wrap',
                     }}>
                     {status === 'declined' || status__ ? null : (
-                      <Text_btn
-                        icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
-                        action={this.go_to_chat}
-                        text={
-                          user._id === Admin_id ? 'Respond' : `Contact Admin`
-                        }
-                        accent
-                      />
+                      <Bg_view
+                        style={{
+                          borderRightWidth: 1,
+                          borderRightColor: '#eee',
+                          marginTop: 15,
+                        }}>
+                        <Fr_text>Having issues?</Fr_text>
+                        <Text_btn
+                          icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
+                          action={this.go_to_chat}
+                          text={
+                            user._id === Admin_id ? 'Respond' : `Contact Admin`
+                          }
+                          accent
+                        />
+                      </Bg_view>
                     )}
                     {status === 'accepted' ? (
                       <Bg_view horizontal style={{flexWrap: 'wrap'}}>
@@ -404,7 +417,7 @@ class Offer extends React.Component {
                     ) : status === 'completed' ? null : (
                       <Text_btn
                         text="remove offer"
-                        action={this.remove_offer}
+                        action={() => this.toggle_remove_offer()}
                         accent
                         capitalise
                       />
@@ -415,14 +428,22 @@ class Offer extends React.Component {
                     horizontal
                     style={{justifyContent: 'center', alignItems: 'center'}}>
                     {status === 'declined' ? null : !status__ ? (
-                      <Text_btn
-                        icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
-                        action={this.go_to_chat}
-                        accent
-                        text={
-                          user._id === Admin_id ? 'Respond' : `Contact Admin`
-                        }
-                      />
+                      <Bg_view
+                        style={{
+                          borderRightWidth: 1,
+                          borderRightColor: '#eee',
+                          marginTop: 15,
+                        }}>
+                        <Fr_text>Having issues?</Fr_text>
+                        <Text_btn
+                          icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
+                          action={this.go_to_chat}
+                          accent
+                          text={
+                            user._id === Admin_id ? 'Respond' : `Contact Admin`
+                          }
+                        />
+                      </Bg_view>
                     ) : null}
                     {status === 'declined' ? null : status ===
                       'accepted' ? null : status === 'in-escrow' ? (
@@ -551,6 +572,14 @@ class Offer extends React.Component {
               navigation={navigation}
               user={user}
               close_modal={() => this.cool_modal_confirm?.toggle_show_modal()}
+            />
+          </Cool_modal>
+
+          <Cool_modal ref={remove => (this.remove = remove)}>
+            <Confirm_remove_offer
+              offer={offer}
+              toggle={this.toggle_remove_offer}
+              proceed={this.remove_offer}
             />
           </Cool_modal>
         </View>
