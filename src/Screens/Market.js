@@ -13,7 +13,6 @@ import List_empty from '../Components/list_empty';
 import Loadindicator from '../Components/load_indicator';
 import Onsale_currency from '../Components/onsale_currency';
 import Search_input from '../Components/search_input';
-import Small_btn from '../Components/small_button';
 import Text_btn from '../Components/Text_btn';
 import {filter} from '../Components/transactions';
 import {hp, wp} from '../utils/dimensions';
@@ -112,48 +111,6 @@ class Market extends React.Component {
     this.setState({screen_state});
   };
 
-  render_buttons = () => {
-    let {screen_state, my_sales} = this.state;
-    let {navigation} = this.props;
-
-    return (
-      <Bg_view no_bg style={{justifyContent: 'center'}} horizontal>
-        <Small_btn
-          inverted={!my_sales}
-          title="my sales"
-          action={this.my_sales}
-          style={{
-            minWidth: null,
-            paddingHorizontal: wp(2.8),
-            margin: 0,
-          }}
-          right_icon={
-            <Icon
-              icon="buy_wine_colour_icon.png"
-              style={{height: wp(5), width: wp(5), marginRight: wp(1)}}
-            />
-          }
-        />
-        <Small_btn
-          inverted={screen_state !== 'placed_offers'}
-          title="placed offers"
-          action={() => navigation.navigate('buyer_offers')}
-          style={{
-            minWidth: null,
-            paddingHorizontal: wp(2.8),
-            margin: 0,
-          }}
-          icon={
-            <Icon
-              icon="forward_arrow_icon.png"
-              style={{height: wp(5), width: wp(5), marginRight: wp(1.4)}}
-            />
-          }
-        />
-      </Bg_view>
-    );
-  };
-
   render = () => {
     let {navigation} = this.props;
     let {
@@ -215,25 +172,32 @@ class Market extends React.Component {
                 />
               ) : null}
 
-              {this.render_buttons()}
-
               <Line />
 
               {currencies && !my_sales ? (
-                <Bg_view style={{height: hp(10)}}>
-                  <Fr_text>Select your currencies to transact</Fr_text>
+                <Bg_view style={{height: hp(12)}}>
+                  <Fr_text centralise style={{marginVertical: 10}}>
+                    Select your currencies to transact
+                  </Fr_text>
 
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    <Bg_view style={{width: wp(4)}} />
+                    <Bg_view style={{width: wp(3)}} />
                     {currencies.map(currency_ =>
                       currency_.name === 'naira' ? null : (
-                        <Text_btn
-                          key={currency_._id}
-                          text={currency_.name}
-                          accent={currency_.name === currency}
-                          capitalise
-                          action={() => this.set_currency(currency_.name)}
-                        />
+                        <Bg_view
+                          style={{
+                            borderRightWidth: 1,
+                            borderRightColor: '#ccc',
+                            paddingHorizontal: 5,
+                          }}>
+                          <Text_btn
+                            key={currency_._id}
+                            text={currency_.name}
+                            accent={currency_.name === currency}
+                            capitalise
+                            action={() => this.set_currency(currency_.name)}
+                          />
+                        </Bg_view>
                       ),
                     )}
                   </ScrollView>

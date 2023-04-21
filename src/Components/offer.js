@@ -1,6 +1,6 @@
 import React from 'react';
 import {TouchableWithoutFeedback, View} from 'react-native';
-import {wp} from '../utils/dimensions';
+import {hp, wp} from '../utils/dimensions';
 import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
 import Icon from './Icon';
@@ -16,6 +16,7 @@ import Countdown from './countdown';
 import Bank_transfer from './bank_transfer';
 import Online_registration from './online_registration';
 import Message from './message';
+import Offer_details from './offer_details';
 
 class Offer extends React.Component {
   constructor(props) {
@@ -275,6 +276,38 @@ class Offer extends React.Component {
                 </Fr_text>
               </Bg_view>
             </Bg_view>
+
+            <Bg_view>
+              {message ? (
+                <Message
+                  message={message}
+                  loggeduser={user}
+                  navigation={navigation}
+                  onsale={onsale}
+                  centralise
+                />
+              ) : offer_need.need === 'bank transfer' ? (
+                (
+                  <Bg_view>
+                    <Fr_text italic centralise>
+                      About the Transaction
+                    </Fr_text>
+                    <Offer_details
+                      style={{marginVertical: hp(1.4)}}
+                      text={offer_need.message}
+                    />
+                  </Bg_view>
+                ) || (
+                  <Bank_transfer
+                    bank_transfer={offer_need}
+                    is_seller={is_seller}
+                  />
+                )
+              ) : (
+                <Online_registration reg={offer_need} is_seller={is_seller} />
+              )}
+            </Bg_view>
+
             {no_foot ? null : status === 'in-dispute' ? (
               <Text_btn
                 text="in-dispute"
@@ -485,36 +518,6 @@ class Offer extends React.Component {
                 with transaction.
               </Fr_text>
             ) : null}
-
-            <Bg_view>
-              {message ? (
-                <Message
-                  message={message}
-                  loggeduser={user}
-                  navigation={navigation}
-                  onsale={onsale}
-                  centralise
-                />
-              ) : offer_need.need === 'bank transfer' ? (
-                (
-                  <Bg_view>
-                    <Fr_text italic centralise>
-                      About the Transaction
-                    </Fr_text>
-                    <Fr_text centralise bold>
-                      {offer_need.message}
-                    </Fr_text>
-                  </Bg_view>
-                ) || (
-                  <Bank_transfer
-                    bank_transfer={offer_need}
-                    is_seller={is_seller}
-                  />
-                )
-              ) : (
-                <Online_registration reg={offer_need} is_seller={is_seller} />
-              )}
-            </Bg_view>
           </Bg_view>
           <Cool_modal
             ref={cool_modal_deposit =>

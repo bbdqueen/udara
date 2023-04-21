@@ -132,6 +132,53 @@ class Wallet extends React.Component {
   set_currency = (currency, currency_full) =>
     this.setState({currency, currency_full});
 
+  my_sales = () => {
+    let {my_sales} = this.state;
+    this.setState({my_sales: !my_sales, onsales: null}, this.fetch_currencies);
+  };
+
+  render_buttons = () => {
+    let {screen_state, my_sales} = this.state;
+    let {navigation} = this.props;
+
+    return (
+      <Bg_view no_bg style={{justifyContent: 'center'}} horizontal>
+        <Small_btn
+          inverted={!my_sales}
+          title="my sales"
+          action={() => navigation.navigate('my_sales')}
+          style={{
+            minWidth: null,
+            paddingHorizontal: wp(2.8),
+            margin: 0,
+          }}
+          right_icon={
+            <Icon
+              icon="buy_wine_colour_icon.png"
+              style={{height: wp(5), width: wp(5), marginRight: wp(1)}}
+            />
+          }
+        />
+        <Small_btn
+          inverted={screen_state !== 'placed_offers'}
+          title="placed offers"
+          action={() => navigation.navigate('buyer_offers')}
+          style={{
+            minWidth: null,
+            paddingHorizontal: wp(2.8),
+            margin: 0,
+          }}
+          icon={
+            <Icon
+              icon="forward_arrow_icon.png"
+              style={{height: wp(5), width: wp(5), marginRight: wp(1.4)}}
+            />
+          }
+        />
+      </Bg_view>
+    );
+  };
+
   render = () => {
     let {navigation} = this.props;
     let {value, refreshing_txs, rate, currency_full} = this.state;
@@ -298,6 +345,9 @@ class Wallet extends React.Component {
                       <Small_btn title="buy" action={this.buy} inverted />
                     </Bg_view>
                   </Bg_view>
+
+                  {this.render_buttons()}
+
                   <Line />
                   {refreshing_txs ? null : (
                     <Transactions

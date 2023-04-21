@@ -84,7 +84,7 @@ class Change_password extends React.Component {
 
   save_password = async () => {
     let {navigation, route} = this.props;
-    let {user} = route.params;
+    let {user, to_login} = route.params;
     let {old_key, new_key} = this.state;
 
     let res = await post_request(`change_password/${user}`, {

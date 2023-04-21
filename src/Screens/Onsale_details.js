@@ -105,6 +105,41 @@ class Onsale_details extends React.Component {
         />
 
         <ScrollView showsVerticalScrollIndicator={false}>
+          {my_offers ? (
+            my_offers.length ? (
+              <Bg_view style={{marginBottom: hp(1.4)}}>
+                <Fr_text
+                  style={{
+                    margin: wp(2.8),
+                    marginBottom: 0,
+                    marginLeft: wp(5.6),
+                  }}
+                  accent>
+                  Placed Offers
+                </Fr_text>
+                <FlatList
+                  data={my_offers}
+                  keyExtractor={item => item._id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={({item}) => (
+                    <Bg_view style={{marginLeft: 10}}>
+                      <Offer
+                        offer={item}
+                        onsale={onsale}
+                        user={user}
+                        navigation={navigation}
+                      />
+                    </Bg_view>
+                  )}
+                />
+                <Line />
+              </Bg_view>
+            ) : null
+          ) : (
+            <Loadindicator />
+          )}
+
           <Fr_text
             centralise
             size={wp(5)}
@@ -113,8 +148,11 @@ class Onsale_details extends React.Component {
               marginBottom: wp(2.8),
               marginHorizontal: wp(25),
             }}>
-            How much do you want to buy?
+            {my_offers?.length
+              ? 'Do you want to buy more?'
+              : 'How much do you want to buy?'}
           </Fr_text>
+
           <Bg_view
             style={{
               margin: wp(4),
@@ -169,35 +207,6 @@ class Onsale_details extends React.Component {
                 action={this.toggle_send_offer || this.send_offer}
               />
             ) : null}
-
-            <Line />
-            {my_offers ? (
-              my_offers.length ? (
-                <Bg_view style={{marginBottom: hp(1.4)}}>
-                  <Fr_text style={{margin: wp(2.8), marginBottom: 0}} accent>
-                    Placed Offers
-                  </Fr_text>
-                  <FlatList
-                    data={my_offers}
-                    keyExtractor={item => item._id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={({item}) => (
-                      <Bg_view>
-                        <Offer
-                          offer={item}
-                          onsale={onsale}
-                          user={user}
-                          navigation={navigation}
-                        />
-                      </Bg_view>
-                    )}
-                  />
-                </Bg_view>
-              ) : null
-            ) : (
-              <Loadindicator />
-            )}
           </Bg_view>
 
           {offer_terms ? (

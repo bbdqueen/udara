@@ -20,93 +20,58 @@ import {post_request} from '../utils/services';
 import toast from '../utils/toast';
 import Text_btn from '../Components/Text_btn';
 
-const default_country_code = {
-  code: '+234',
-  flag: 'nigeria_flag_rectangle.png',
-  country: 'nigeria',
-  util: 'country_codes',
-  _id: 'utils~pnWEoNgkHcKqr3Z3i9vO~1660232528522',
-  created: 1660232528522,
-  updated: 1660232528522,
-};
-
 class Reset_password extends React.Component {
   constructor(props) {
     super(props);
 
     let {route} = this.props;
-    let email = route?.params?.email || '',
-      country_code = route?.params?.country_code || default_country_code;
 
     this.state = {
-      email,
       password: '',
-      country_code,
+      confirm_password: '',
     };
   }
 
-  componentDidMount = async () => {
-    let new_user = await AsyncStorage.getItem('new_user');
-    if (new_user) {
-      new_user = JSON.parse(new_user);
-      this.setState({
-        new_user: true,
-        email: new_user.email.replace(new_user.country_code.code, ''),
-        country_code: new_user.country_code,
-        user: new_user._id,
-      });
-    }
-    let params = this.props.route?.params;
-    if (params) {
-      // country_code
-    }
-  };
+  componentDidMount = async () => {};
 
   toggle_reveal_password = () =>
     this.setState({reveal_password: !this.state.reveal_password});
 
-  set_email = email => this.setState({email});
-
   set_password = password => this.setState({password});
 
+  set_confirm_password = confirm_password => this.setState({confirm_password});
+
   is_set = () => {
-    let {email, password} = this.state;
-    return validate_phone(email) && password.length >= 6;
+    let {email, password, confirm_password} = this.state;
+    return (
+      validate_phone(email) &&
+      password.length >= 6 &&
+      confirm_password === password
+    );
   };
 
-  toggle_country_codes = () =>
-    this.cool_modal && this.cool_modal.toggle_show_modal();
+  reset = async () => {
+    let {route, navigation} = this.props;
+    let {user, email} = route.params;
 
-  set_country_code = country_code =>
-    this.setState({country_code}, this.toggle_country_codes);
+    let {password} = this.state;
 
-  login = async () => {
     this.setState({loading: true});
-    let {route} = this.props;
-    let {email, user, new_user, password} = this.state;
 
-    user = user || route?.params?.user;
-    new_user = new_user || route?.params?.new_user;
+    let res = await post_request('update_password', {user, key: password});
 
-    new_user &&
-      (await post_request('update_password', {
-        key: password,
-        new_user: true,
-        user,
-      }));
-
-    let result = await post_request('logging_in', {email, key: password});
-    await AsyncStorage.removeItem('new_user');
-    this.setState({loading: false});
-    result && result.user
-      ? emitter.emit('logged_in', {user: result.user, wallet: result.wallet})
-      : toast(result);
+    if (res?.user) {
+      navigation.navigate('login', {email});
+    } else {
+      this.setState({loading: false}, () =>
+        toast(res?.message || 'Cannot reset password at the moment'),
+      );
+    }
   };
 
   render = () => {
-    let {route, navigation} = this.props;
-    let new_user = route?.params?.new_user || this.state.new_user;
-    let {email, password, reveal_password, loading, country_code} = this.state;
+    let {navigation} = this.props;
+    let {password, confirm_password, reveal_password, loading} = this.state;
 
     return (
       <Bg_view flex>
@@ -137,30 +102,10 @@ class Reset_password extends React.Component {
                   style={{marginBottom: hp(4)}}>
                   Reset_password
                 </Fr_text>
-                <Text_input
-                  value={email}
-                  placeholder="type your email"
-                  label="email Address"
-                  type="email-pad"
-                  on_change_text={this.set_email}
-                  disabled={!!new_user}
-                  left_icon={
-                    <TouchableWithoutFeedback
-                      onPress={this.toggle_country_codes}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Icon
-                          icon={country_code.flag}
-                          style={{height: wp(10), width: wp(10)}}
-                        />
-                      </View>
-                    </TouchableWithoutFeedback>
-                  }
-                />
 
                 <Text_input
                   value={password}
-                  label={new_user ? 'create your password' : 'password'}
+                  label={'new password'}
                   secure={!reveal_password}
                   placeholder="type your password"
                   on_change_text={this.set_password}
@@ -175,32 +120,40 @@ class Reset_password extends React.Component {
                     />
                   }
                 />
+
+                <Text_input
+                  value={confirm_password}
+                  label={'confirm password'}
+                  secure={!reveal_password}
+                  placeholder="type your confirm password"
+                  on_change_text={this.set_confirm_password}
+                  right_icon={
+                    <Icon
+                      icon={
+                        reveal_password
+                          ? require('./../assets/Icons/eye.png')
+                          : require('./../assets/Icons/hidden.png')
+                      }
+                      action={this.toggle_reveal_password}
+                    />
+                  }
+                />
+
                 <Stretched_button
                   title="login"
                   loading={loading}
                   style={{marginHorizontal: 0, marginTop: hp(2)}}
-                  action={this.login}
+                  action={this.reset}
                 />
 
                 <Bg_view flex style={{alignItems: 'center'}}>
                   <Text_btn
-                    text="Forgot password?"
+                    text="Back to login"
                     accent
-                    action={() =>
-                      navigation.navigate('forgot_password', {email})
-                    }
+                    action={() => navigation.navigate('login')}
                   />
                 </Bg_view>
               </Bg_view>
-
-              <Cool_modal ref={cool_modal => (this.cool_modal = cool_modal)}>
-                <Country_codes
-                  close_modal={() =>
-                    this.cool_modal && this.cool_modal.toggle_show_modal()
-                  }
-                  select={this.set_country_code}
-                />
-              </Cool_modal>
             </Bg_view>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -210,4 +163,3 @@ class Reset_password extends React.Component {
 }
 
 export default Reset_password;
-export {default_country_code};

@@ -1,10 +1,8 @@
 import React from 'react';
 import {TextInput, KeyboardAvoidingView, ScrollView} from 'react-native';
-import {emitter} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Fr_text from '../Components/Fr_text';
 import Icon from '../Components/Icon';
-import Otp_counter from '../Components/otp_counter';
 import Stretched_button from '../Components/Stretched_button';
 import {hp, wp} from '../utils/dimensions';
 import {email_regex} from '../utils/functions';
@@ -41,7 +39,7 @@ class Forgot_password extends React.Component {
     let res = await post_request('forgot_password', {email});
 
     if (res?.user) {
-      navigation.navigate('verify_email', {email, user: res.user});
+      navigation.navigate('verify_email', {email: res.email, user: res.user});
     } else toast(res?.message || "Coundn't get OTP at the moment");
   };
 

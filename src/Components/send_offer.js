@@ -11,6 +11,8 @@ import Onsale_currency from './onsale_currency';
 import Bank_transfer from './state_bank_transfer';
 import Stretched_button from './Stretched_button';
 import Text_btn from './Text_btn';
+import Confirm_offer_details from './confirm_offer_details';
+import Cool_modal from './cool_modal';
 
 class Send_offer extends React.Component {
   constructor(props) {
@@ -23,11 +25,14 @@ class Send_offer extends React.Component {
 
   needs = new Array('bank transfer', 'online registration');
 
+  toggle_confirm = () => this.confirm?.toggle();
+
   send_offer = async () => {
     let {send_offer, toggle} = this.props;
-    let {need, bank_name, sending, text, account_number, url, site_details} =
-      this.state;
+    let {need, sending, text} = this.state;
+
     if (sending) return;
+    this.toggle_confirm();
 
     let offer_need = {need, message: text};
 
@@ -44,8 +49,7 @@ class Send_offer extends React.Component {
   render() {
     let {toggle, onsale, navigation, user, amount} = this.props;
     let {currency} = onsale;
-    let {bank_name, account_number, sending, need, text, url, site_details} =
-      this.state;
+    let {bank_name, sending, need, text} = this.state;
 
     return (
       <Bg_view>
@@ -94,15 +98,11 @@ class Send_offer extends React.Component {
               !need ? null : need === this.needs[0] ? (
                 <Bank_transfer
                   bank_name={bank_name}
-                  account_number={account_number}
                   currency={currency}
                   amount={amount}
                   set_body_text={text => this.setState({text})}
                   body_text={text}
                   set_bank_name={bank_name => this.setState({bank_name})}
-                  set_account_number={account_number =>
-                    this.setState({account_number})
-                  }
                 />
               ) : null
               // <Online_registration
@@ -118,11 +118,22 @@ class Send_offer extends React.Component {
             <Stretched_button
               title="submit"
               loading={sending}
-              action={this.send_offer}
+              action={this.toggle_confirm}
               disabled={!need || !text}
             />
           </Bg_view>
         </ScrollView>
+
+        <Cool_modal center ref={confirm => (this.confirm = confirm)}>
+          <Confirm_offer_details
+            user={user}
+            onsale={onsale}
+            details={{text, amount, currency}}
+            navigation={navigation}
+            toggle={this.toggle_confirm}
+            proceed={this.send_offer}
+          />
+        </Cool_modal>
       </Bg_view>
     );
   }

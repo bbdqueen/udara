@@ -47,9 +47,9 @@ class Verify_email extends React.Component {
   };
 
   render = () => {
-    let {navigation, route} = this.props;
+    let {route} = this.props;
     let {email} = route.params;
-    let {valid_code, loading} = this.state;
+    let {valid_code, loading, code} = this.state;
 
     return (
       <Bg_view flex>

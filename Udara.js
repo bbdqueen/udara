@@ -48,6 +48,9 @@ import Account_verification from './src/Screens/Account_verification';
 import Verification_details from './src/Screens/veirification_details';
 import Verification_requests from './src/Screens/verification_requests';
 import Forgot_password from './src/Screens/forgot_password';
+import Reset_password from './src/Screens/reset_password';
+import Verify_email from './src/Screens/verify_email';
+import My_sales from './src/Screens/my_sales';
 
 const User = React.createContext();
 
@@ -101,6 +104,8 @@ class App_entry extends React.Component {
         <Auth_stack.Screen name="verification" component={Verification} />
         <Auth_stack.Screen name="login" component={Login} />
         <Auth_stack.Screen name="forgot_password" component={Forgot_password} />
+        <Auth_stack.Screen name="reset_password" component={Reset_password} />
+        <Auth_stack.Screen name="verify_email" component={Verify_email} />
         <Auth_stack.Screen name="congratulation" component={Congratulation} />
       </Auth_stack.Navigator>
     );
@@ -252,6 +257,7 @@ class App_stack_entry extends React.Component {
         <App_stack.Screen name="update_phone" component={Update_phone} />
         <App_stack.Screen name="update_email" component={Update_email} />
         <App_stack.Screen name="sell" component={Sell} />
+        <App_stack.Screen name="my_sales" component={My_sales} />
         <App_stack.Screen name="onsale_details" component={Onsale_details} />
         <App_stack.Screen name="offers" component={Offers} />
         <App_stack.Screen name="submit_dispute" component={Submit_dispute} />
