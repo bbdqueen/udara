@@ -76,6 +76,7 @@ class Send_offer extends React.Component {
 
             <Bg_view>
               <Onsale_currency
+                in_send_offer
                 onsale={onsale}
                 user={user}
                 navigation={navigation}

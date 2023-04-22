@@ -78,7 +78,8 @@ class Notification extends React.Component {
             </Fr_text>
           </Bg_view>
         </Bg_view>
-        {this.render_data()}
+
+        <Bg_view style={{alignItems: 'center'}}>{this.render_data()}</Bg_view>
 
         <Line />
       </Bg_view>

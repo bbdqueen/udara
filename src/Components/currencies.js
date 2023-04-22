@@ -56,22 +56,24 @@ class Currencies extends React.Component {
         <ScrollView showVerticalScrollIndicator={false}>
           {currencies ? (
             currencies.length ? (
-              currencies.map(currency =>
-                exclude.includes(currency.name) ||
-                (search_value &&
-                  !currency.name
-                    .toLowerCase()
-                    .includes(search_value.toLowerCase().trim())) ? null : (
-                  <Currency_item
-                    currency={currency}
-                    select={(currency, full) => {
-                      select(currency, full);
-                      close_modal && close_modal();
-                    }}
-                    key={currency.name}
-                  />
-                ),
-              )
+              currencies
+                .sort((a, b) => a.name > b.name)
+                .map(currency =>
+                  exclude.includes(currency.name) ||
+                  (search_value &&
+                    !currency.name
+                      .toLowerCase()
+                      .includes(search_value.toLowerCase().trim())) ? null : (
+                    <Currency_item
+                      currency={currency}
+                      select={(currency, full) => {
+                        select(currency, full);
+                        close_modal && close_modal();
+                      }}
+                      key={currency.name}
+                    />
+                  ),
+                )
             ) : (
               <List_empty text="No currencies" />
             )

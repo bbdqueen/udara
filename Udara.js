@@ -6,7 +6,7 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StatusBar} from 'react-native';
+import {PanResponder, StatusBar, View} from 'react-native';
 import Splash from './src/Screens/splash';
 import Onboarding from './src/Screens/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -51,6 +51,7 @@ import Forgot_password from './src/Screens/forgot_password';
 import Reset_password from './src/Screens/reset_password';
 import Verify_email from './src/Screens/verify_email';
 import My_sales from './src/Screens/my_sales';
+import Relogin from './src/Screens/Relogin';
 
 const User = React.createContext();
 
@@ -100,6 +101,7 @@ class App_entry extends React.Component {
         />
         <Auth_stack.Screen name="login_et_signup" component={Login_et_signup} />
         <Auth_stack.Screen name="signup" component={Signup} />
+        <Auth_stack.Screen name="relogin" component={Relogin} />
         <Auth_stack.Screen name="registration" component={Registration} />
         <Auth_stack.Screen name="verification" component={Verification} />
         <Auth_stack.Screen name="login" component={Login} />
@@ -354,7 +356,11 @@ class Udara extends React.Component {
     } else {
       let result = await get_request(`user_refresh/${user}`);
       if (result) {
-        this.setState({user: result.user, wallet: result.wallet, logged: true});
+        this.setState({
+          user: result.user,
+          wallet: result.wallet,
+          relogin: true,
+        });
         await AsyncStorage.setItem('user', result.user._id);
 
         this.set_socket(result.user._id);
@@ -376,7 +382,13 @@ class Udara extends React.Component {
       this.setState({user: {...this.state.user, status: 'pending'}});
 
     this.logged_in = async ({user, wallet}) => {
-      this.setState({logged: true, user, wallet, init_screen: ''});
+      this.setState({
+        logged: true,
+        user,
+        wallet,
+        init_screen: '',
+        relogin: false,
+      });
       await AsyncStorage.setItem('user', user._id);
     };
 
@@ -504,7 +516,25 @@ class Udara extends React.Component {
     emitter.listen('focus_message_input', this.focus_message_input);
     emitter.listen('blur_message_input', this.blur_message_input);
     emitter.listen('update_user_data', this.update_user_data);
+
+    this._pan_responder = PanResponder.create({
+      onStartShouldSetPanResponder: () => {
+        this.reset_timer();
+        return true;
+      },
+      onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => {
+        this.reset_timer();
+        return false;
+      },
+      onMoveShouldSetPanResponderCapture: () => false,
+      onPanResponderTerminationRequest: () => true,
+      onShouldBlockNativeResponder: () => false,
+    });
+    this.timer = setTimeout(this.relogin, this.timeout);
   };
+
+  timeout = 60 * 1000 * 5;
 
   componentWillUnmount = () => {
     emitter.remove_listener('username_updated', this.username_updated);
@@ -524,35 +554,59 @@ class Udara extends React.Component {
     emitter.remove_listener('focus_message_input', this.focus_message_input);
     emitter.remove_listener('blur_message_input', this.blur_message_input);
     emitter.remove_listener('update_user_data', this.update_user_data);
+
+    clearTimeout(this.timer);
   };
 
+  relogin = () => {
+    this.setState({relogin: true});
+  };
+
+  _pan_responder = {};
+  timer = 0;
+
+  reset_timer() {
+    clearTimeout(this.timer);
+    if (this.state.show) this.setState({show: false});
+    this.timer = setTimeout(this.relogin, this.timeout);
+  }
+
   render = () => {
-    let {logged, user, wallet, init_screen, signed_out} = this.state;
+    let {logged, user, wallet, init_screen, relogin, signed_out} = this.state;
     if (wallet) wallet.fav_currency = wallet.fav_currency || 'naira';
 
     return (
       <NavigationContainer>
-        {logged === 'fetching' ? (
-          <Splash />
-        ) : logged === true ? (
-          <Bg_view flex>
-            <StatusBar backgroundColor="#eee" barStyle="dark-content" />
+        <View
+          collapsable={false}
+          style={{flex: 1}}
+          {...this._pan_responder.panHandlers}>
+          {logged === 'fetching' && !relogin ? (
+            <Splash />
+          ) : logged === true && !relogin ? (
+            <Bg_view flex>
+              <StatusBar backgroundColor="#eee" barStyle="dark-content" />
+              <User.Provider value={{...user, wallet}}>
+                <App_stack_entry user={user} />
+              </User.Provider>
+            </Bg_view>
+          ) : (
             <User.Provider value={{...user, wallet}}>
-              <App_stack_entry user={user} />
+              <App_entry
+                onboardings={this.onboardings}
+                init_screen={
+                  relogin
+                    ? 'relogin'
+                    : init_screen
+                    ? init_screen
+                    : signed_out
+                    ? 'login_et_signup'
+                    : 'onboarding'
+                }
+              />
             </User.Provider>
-          </Bg_view>
-        ) : (
-          <App_entry
-            onboardings={this.onboardings}
-            init_screen={
-              init_screen
-                ? init_screen
-                : signed_out
-                ? 'login_et_signup'
-                : 'onboarding'
-            }
-          />
-        )}
+          )}
+        </View>
       </NavigationContainer>
     );
   };

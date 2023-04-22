@@ -63,22 +63,8 @@ class Market extends React.Component {
     if (!!mount) {
       let {onsales: onsales_, currencies: currencies_} = onsales;
       onsales = onsales_;
-      currencies = currencies_;
+      currencies = currencies_?.sort((a, b) => a.name > b.name);
     }
-
-    // if (currencies && currencies.map)
-    //   currencies = currencies.sort((c1, c2) => {
-    //     let c1_index = currencies_alignment.findIndex(m =>
-    //         c1.name.toLowerCase().includes(m),
-    //       ),
-    //       c2_index = currencies_alignment.findIndex(m =>
-    //         c2.name.toLowerCase().includes(m),
-    //       );
-    //     if (c1_index === -1) c1_index = 200;
-    //     if (c2_index === -1) c2_index = 200;
-
-    //     return c1_index - c2_index;
-    //   });
 
     this.setState(mount ? {onsales, currencies} : {onsales});
   };

@@ -362,30 +362,11 @@ class Offer extends React.Component {
                 }}>
                 {user._id !== seller._id /* loggeduser is buyer */ ? (
                   <Bg_view
-                    horizontal
                     style={{
                       justifyContent: 'center',
-                      alignItems: 'space-between',
+                      alignItems: 'flex-start',
                       flexWrap: 'wrap',
                     }}>
-                    {status === 'declined' || status__ ? null : (
-                      <Bg_view
-                        style={{
-                          borderRightWidth: 1,
-                          borderRightColor: '#eee',
-                          marginTop: 15,
-                        }}>
-                        <Fr_text>Having issues?</Fr_text>
-                        <Text_btn
-                          icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
-                          action={this.go_to_chat}
-                          text={
-                            user._id === Admin_id ? 'Respond' : `Contact Admin`
-                          }
-                          accent
-                        />
-                      </Bg_view>
-                    )}
                     {status === 'accepted' ? (
                       <Bg_view horizontal style={{flexWrap: 'wrap'}}>
                         <Text_btn
@@ -448,12 +429,47 @@ class Offer extends React.Component {
                         />
                       )
                     ) : status === 'completed' ? null : (
-                      <Text_btn
-                        text="remove offer"
-                        action={() => this.toggle_remove_offer()}
-                        accent
-                        capitalise
-                      />
+                      <Bg_view horizontal>
+                        <Bg_view flex>
+                          <Fr_text>No longer interested?</Fr_text>
+                        </Bg_view>
+
+                        <Bg_view flex>
+                          <Text_btn
+                            icon={require('../../android/app/src/main/assets/Icons/decline.jpeg')}
+                            text="remove offer"
+                            action={() => this.toggle_remove_offer()}
+                            accent
+                            capitalise
+                          />
+                        </Bg_view>
+                      </Bg_view>
+                    )}
+
+                    {status === 'declined' || status__ ? null : (
+                      <Bg_view
+                        horizontal
+                        style={{
+                          borderRightWidth: 1,
+                          borderRightColor: '#eee',
+                          // marginTop: 15,
+                        }}>
+                        <Bg_view flex>
+                          <Fr_text>Having issues?</Fr_text>
+                        </Bg_view>
+                        <Bg_view flex>
+                          <Text_btn
+                            icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
+                            action={this.go_to_chat}
+                            text={
+                              user._id === Admin_id
+                                ? 'Respond'
+                                : `Contact Admin`
+                            }
+                            accent
+                          />
+                        </Bg_view>
+                      </Bg_view>
                     )}
                   </Bg_view>
                 ) : (

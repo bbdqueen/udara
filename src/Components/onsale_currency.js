@@ -47,7 +47,7 @@ class Onsale_currency extends React.Component {
   remove_sale = async () => {
     this.setState({loading: true});
     let {onsale, user, on_remove} = this.props;
-    let {seller, currency, value, _id} = onsale;
+    let {seller, currency, _id} = onsale;
     if (seller._id !== user._id) {
       toast('Something is not right!');
       this.setState({loading: false});
@@ -143,7 +143,7 @@ class Onsale_currency extends React.Component {
     let {show_btn, onsale, removed} = this.state;
     if (removed) return null;
 
-    let {user, navigation} = this.props;
+    let {user, navigation, in_send_offer} = this.props;
     if (!onsale) return null;
 
     let {to_currency, minimum_sell_value, icon, value, flag, rate, seller} =
@@ -219,9 +219,9 @@ class Onsale_currency extends React.Component {
                   position: 'relative',
                   left: wp(2.8),
                 }}>
-                {user.status !== 'verified' &&
-                value > 500 &&
-                user._id !== Admin_id ? (
+                {in_send_offer ? null : user.status !== 'verified' &&
+                  value > 500 &&
+                  user._id !== Admin_id ? (
                   <Text_btn
                     bold
                     italic
