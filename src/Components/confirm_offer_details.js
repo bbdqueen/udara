@@ -44,8 +44,8 @@ class Confirm_offer_details extends React.Component {
             <Offer_details text={text} style={{marginTop: 20}} />
 
             <Fr_text style={{margin: 20, fontStyle: 'italic'}}>
-              Please confirm the details provided are correct, as Udara would
-              not be liable to any typo errors
+              Confirm the details provided are correct, as Udaralinks would not
+              be liable to any incorrect account info
             </Fr_text>
 
             <Stretched_button title="proceed" action={proceed} />

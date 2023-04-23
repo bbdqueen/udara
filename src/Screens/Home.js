@@ -6,20 +6,32 @@ import {
   View,
 } from 'react-native';
 import {Admin_id, emitter, User} from '../../Udara';
+import Amount_to_sell from '../Components/amount_to_sell';
 import Bg_view from '../Components/Bg_view';
+import Buy from '../Components/buy';
+import Cool_modal from '../Components/cool_modal';
 import Fr_text from '../Components/Fr_text';
 import Icon from '../Components/Icon';
 import Listfooter from '../Components/listfooter';
 import Loadindicator from '../Components/load_indicator';
 import Notification from '../Components/notification';
 import Payment from '../Components/payment';
+import Quick_action from '../Components/quick_action';
 import {hp, wp} from '../utils/dimensions';
+import {commalise_figures} from '../utils/functions';
 import {post_request} from '../utils/services';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {new_txs: new Array()};
+    this.state = {
+      new_txs: new Array(),
+      currency_full: {
+        alphabetic_name: 'USD',
+        icon: 'dollar_icon.png',
+        flag: 'usa_flag_rectangle.png',
+      },
+    };
   }
 
   componentDidMount = async () => {
@@ -52,6 +64,35 @@ class Home extends React.Component {
     emitter.remove_listener('new_transaction', this.new_transaction);
   };
 
+  toggle_buy = () => this.buy_modal?.toggle_show_modal();
+
+  quick_actions = new Array(
+    {
+      title: 'sell',
+      icon: require('../../android/app/src/main/assets/Icons/buy_wine_colour_icon.png'),
+      action: () => this.toggle_sell(),
+    },
+    {
+      title: 'buy',
+      icon: require('../../android/app/src/main/assets/Icons/forward_arrow_icon.png'),
+      action: () => this.toggle_buy(),
+    },
+    {
+      title: 'visit market',
+      icon: require('../../android/app/src/main/assets/Icons/market_icon.png'),
+      action: () => this.props.navigation.navigate('market'),
+    },
+  );
+
+  toggle_sell = () => this.sell_modal?.toggle_show_modal();
+
+  set_value = value => this.setState({value});
+
+  set_rate = rate => this.setState({rate});
+
+  set_currency = (currency, currency_full) =>
+    this.setState({currency, currency_full});
+
   payments = new Array(
     {
       title: 'Pay a Bill',
@@ -67,7 +108,7 @@ class Home extends React.Component {
 
   render() {
     let {navigation} = this.props;
-    let {new_txs, notifications} = this.state;
+    let {new_txs, notifications, currency_full, value, rate} = this.state;
 
     return (
       <User.Consumer>
@@ -146,7 +187,9 @@ class Home extends React.Component {
                               Total balance
                             </Fr_text>
                             <Fr_text color="#fff" bold="900" size={wp(6.5)}>
-                              {`${wallet.naira.toFixed(2)} NGN`}
+                              {`${commalise_figures(
+                                wallet.naira.toFixed(2),
+                              )} NGN`}
                             </Fr_text>
                             <Bg_view no_bg>
                               <Fr_text
@@ -194,8 +237,33 @@ class Home extends React.Component {
                   </TouchableWithoutFeedback>
 
                   <Bg_view>
+                    <Fr_text
+                      accent
+                      style={{marginTop: hp(4), marginLeft: wp(5.6)}}>
+                      Quick Actions
+                    </Fr_text>
+
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}>
+                      <Bg_view
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginHorizontal: wp(2.8),
+                        }}>
+                        {this.quick_actions.map(action => (
+                          <Quick_action action={action} key={action.title} />
+                        ))}
+                      </Bg_view>
+                    </ScrollView>
+                  </Bg_view>
+
+                  <Bg_view>
                     {notifications?.length ? (
-                      <Fr_text style={{marginTop: hp(4), marginLeft: wp(5.6)}}>
+                      <Fr_text
+                        accent
+                        style={{marginTop: hp(4), marginLeft: wp(5.6)}}>
                         Recent Notifications
                       </Fr_text>
                     ) : null}
@@ -244,6 +312,28 @@ class Home extends React.Component {
                   <Listfooter />
                 </Bg_view>
               </ScrollView>
+
+              <Cool_modal ref={sell_modal => (this.sell_modal = sell_modal)}>
+                <Amount_to_sell
+                  ref={amount_to_sell => (this.amount_to_sell = amount_to_sell)}
+                  user={user}
+                  default_value={{currency: currency_full, value, rate}}
+                  set_rate_wallet={this.set_rate}
+                  set_value_wallet={this.set_value}
+                  set_currency_wallet={this.set_currency}
+                  close_modal={this.toggle_sell}
+                  navigation={navigation}
+                />
+              </Cool_modal>
+
+              <Cool_modal ref={buy_modal => (this.buy_modal = buy_modal)}>
+                <Buy
+                  user={user}
+                  default_value={{currency: currency_full, value, rate}}
+                  close_modal={this.toggle_buy}
+                  navigation={navigation}
+                />
+              </Cool_modal>
             </Bg_view>
           );
         }}

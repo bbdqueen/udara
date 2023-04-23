@@ -187,7 +187,7 @@ class Amount_to_sell extends React.Component {
           <Currencies
             select={this.set_currency}
             exclude={new Array(currency_full.name, 'naira')}
-            close_modal={this.cool_modal?.toggle_show_modal}
+            close_modal={() => this.cool_modal?.toggle_show_modal()}
           />
         </Cool_modal>
       </Bg_view>

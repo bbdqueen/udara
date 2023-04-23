@@ -174,6 +174,7 @@ class Withdraw extends React.Component {
             <Text_btn
               text="Select Bank Account"
               centralise
+              accent
               action={() => this.bank_accounts?.toggle_show_modal()}
             />
           </Bg_view>

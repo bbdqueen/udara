@@ -87,6 +87,50 @@ const validate_phone = phone => phone_regex.test(phone);
 
 const validate_email = email => email_regex.test(email);
 
+const commalise_figures_ = figure => {
+  if (typeof figure !== 'number') {
+    return figure;
+  }
+
+  if (figure >= 1e21) return figure.toLocaleString('fullwide');
+
+  figure = figure.toString();
+  if (figure.length <= 3) return figure;
+
+  let ff = '',
+    i;
+  for (i = 0; i < figure.length; i += 3)
+    ff = `${figure.slice(figure.length - i - 3, figure.length - i)},${ff}`;
+
+  if (i < figure.length) ff = `${figure.slice(0, i)}${ff}`;
+  else if (i > figure.length) {
+    ff = `${figure.slice(0, figure.length % 3)}${ff}`;
+  }
+  if (ff.startsWith(',')) ff = ff.slice(1);
+
+  return ff.slice(0, -1);
+};
+
+const commalise_figures = (value, no_fixed) => {
+  if (typeof value !== 'number') {
+    if (typeof value === 'string') {
+      if (/[A-Za-z]\-/.test(value)) return value;
+      else value = Number(value);
+
+      if (!value) return;
+    } else return value;
+  }
+
+  let integer = Math.floor(value);
+  let decimal = (value - integer).toFixed(2).toString();
+
+  let commalised = commalise_figures_(integer);
+
+  return no_fixed
+    ? commalised
+    : `${commalised}${decimal.slice(decimal.indexOf('.'))}`;
+};
+
 export {
   zero_padd_figure,
   format_date,
@@ -99,4 +143,5 @@ export {
   validate_phone,
   format_quick_time,
   generate_random_string,
+  commalise_figures,
 };

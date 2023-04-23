@@ -29,6 +29,7 @@
     "react-native-screens": "^3.15.0",
     "react-native-sha256": "^1.4.7",
     "react-native-snap-carousel": "^3.9.1",
+    "react-native-vector-icons": "^9.2.0",
     "socket.io-client": "^4.5.1"
   },
   "devDependencies": {

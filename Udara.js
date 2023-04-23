@@ -105,6 +105,7 @@ class App_entry extends React.Component {
         <Auth_stack.Screen name="registration" component={Registration} />
         <Auth_stack.Screen name="verification" component={Verification} />
         <Auth_stack.Screen name="login" component={Login} />
+        <Auth_stack.Screen name="privacy_policy" component={Privacy_policy} />
         <Auth_stack.Screen name="forgot_password" component={Forgot_password} />
         <Auth_stack.Screen name="reset_password" component={Reset_password} />
         <Auth_stack.Screen name="verify_email" component={Verify_email} />
@@ -195,7 +196,7 @@ class Index extends React.Component {
             tabBarLabel: 'Market',
             tabBarIcon: ({color, size}) => (
               <Icon
-                icon="market_icon.png"
+                icon={require('./android/app/src/main/assets/Icons/market_icon.png')}
                 style={{height: wp(7), width: wp(7)}}
               />
             ),

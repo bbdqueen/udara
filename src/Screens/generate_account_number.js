@@ -26,7 +26,6 @@ class Generate_account_number extends React.Component {
       brass_account = await get_request(`user_brass_account/${user._id}`);
     }
 
-    console.log(brass_account, 'HELLOOO');
     this.setState({requesting: false, account_details: brass_account});
   };
 
@@ -37,7 +36,7 @@ class Generate_account_number extends React.Component {
 
     let payment_url =
       account_details &&
-      `https://pages.getbrass.co/payment/${account_details.account_id}`;
+      `https://pages.getbrass.co/payment/${account_details?.account_id}`;
 
     return (
       <Bg_view flex>
@@ -71,11 +70,11 @@ class Generate_account_number extends React.Component {
                 <Fr_text size={16}>Account Number</Fr_text>
 
                 <Text_btn
-                  text={account_details.number}
+                  text={account_details?.number}
                   size={22}
                   bold
                   action={() => {
-                    Clipboard.setString(account_details.number);
+                    Clipboard.setString(account_details?.number);
                     toast('Account number copied.');
                   }}
                 />
@@ -83,21 +82,23 @@ class Generate_account_number extends React.Component {
                   Account Name
                 </Fr_text>
                 <Fr_text bold size={22}>
-                  {account_details.name}
+                  {account_details?.name}
                 </Fr_text>
 
                 <Fr_text size={16} style={{marginTop: hp(1.4)}}>
                   Bank
                 </Fr_text>
                 <Fr_text bold size={22} capitalise>
-                  {account_details.bank_name || 'Wema Bank'}
+                  {account_details?.bank_name || 'Wema Bank'}
                 </Fr_text>
 
                 <Bg_view style={{alignItems: 'center', marginTop: 20}}>
                   <Fr_text>Or alternatively; Pay using Link</Fr_text>
 
                   <Text_btn
+                    accent
                     text={payment_url}
+                    bold
                     action={() => Linking.openURL(payment_url)}
                   />
                 </Bg_view>

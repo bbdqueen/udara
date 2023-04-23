@@ -122,7 +122,7 @@ class Login extends React.Component {
                   elevation: 10,
                   shadowColor: '#000',
                   width: wp(88.8),
-                  height: hp(70),
+                  // height: hp(70),
                   justifyContent: 'center',
                   borderRadius: wp(5.6),
                   padding: wp(5.6),
@@ -175,6 +175,20 @@ class Login extends React.Component {
                     />
                   }
                 />
+
+                {new_user ? (
+                  <Bg_view style={{alignItems: 'center'}}>
+                    <Fr_text size={wp(3.8)}>
+                      By clicking login, you agree to Udaralinks
+                    </Fr_text>
+                    <Text_btn
+                      accent
+                      text="Terms and Privacy Policy"
+                      action={() => navigation.navigate('privacy_policy')}
+                    />
+                  </Bg_view>
+                ) : null}
+
                 <Stretched_button
                   title="login"
                   disabled={!email || !password}
@@ -183,14 +197,29 @@ class Login extends React.Component {
                   action={this.login}
                 />
 
-                <Bg_view flex style={{alignItems: 'center'}}>
-                  <Text_btn
-                    text="Forgot password?"
-                    accent
-                    action={() =>
-                      navigation.navigate('forgot_password', {email})
-                    }
-                  />
+                <Bg_view
+                  flex
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                  }}>
+                  <Bg_view flex>
+                    <Text_btn
+                      text="Register"
+                      accent
+                      action={() => navigation.navigate('registration')}
+                    />
+                  </Bg_view>
+                  <Bg_view flex>
+                    <Text_btn
+                      text="Forgot password?"
+                      accent
+                      action={() =>
+                        navigation.navigate('forgot_password', {email})
+                      }
+                    />
+                  </Bg_view>
                 </Bg_view>
               </Bg_view>
 

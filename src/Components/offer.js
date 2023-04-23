@@ -24,6 +24,7 @@ import Offer_details from './offer_details';
 import Line from './line';
 import Confirm_remove_offer from './confirm_remove_offer';
 import Status_info from './status_info';
+import {commalise_figures} from '../utils/functions';
 
 class Offer extends React.Component {
   constructor(props) {
@@ -275,9 +276,11 @@ class Offer extends React.Component {
                 <Icon icon={flag} style={{height: wp(10), width: wp(10)}} />
                 <Bg_view style={{marginLeft: wp(1.4)}}>
                   <Fr_text bold size={wp(4.5)}>
-                    {`${amount} ${currency}`}
+                    {`${commalise_figures(amount)} ${currency}`}
                   </Fr_text>
-                  <Fr_text size={wp(3.5)}>{`x ${offer_rate}`}</Fr_text>
+                  <Fr_text size={wp(3.5)}>{`x ${commalise_figures(
+                    offer_rate,
+                  )}`}</Fr_text>
                 </Bg_view>
               </Bg_view>
               <Bg_view style={{flex: 2, alignItems: 'center'}}>
@@ -308,7 +311,7 @@ class Offer extends React.Component {
                     </View>
                   </TouchableNativeFeedback>
                   <Fr_text bold size={wp(4.5)}>
-                    {`${amount * offer_rate} NGN`}
+                    {`${commalise_figures(amount * offer_rate)} NGN`}
                   </Fr_text>
                 </Bg_view>
               </Bg_view>
@@ -359,21 +362,30 @@ class Offer extends React.Component {
                 style={{
                   alignItems: 'center',
                   flexWrap: 'wrap',
+                  justifyContent: 'center',
                 }}>
                 {user._id !== seller._id /* loggeduser is buyer */ ? (
                   <Bg_view
                     style={{
                       justifyContent: 'center',
-                      alignItems: 'flex-start',
+                      alignItems: 'center',
                       flexWrap: 'wrap',
                     }}>
                     {status === 'accepted' ? (
-                      <Bg_view horizontal style={{flexWrap: 'wrap'}}>
-                        <Text_btn
-                          text="deposit"
+                      <Bg_view
+                        horizontal
+                        style={{flexWrap: 'wrap', justifyContent: 'center'}}>
+                        <Fr_text centralise>
+                          Seller has accepted your offer, proceed by making your
+                          deposit into the escrow account
+                        </Fr_text>
+
+                        <Small_btn
+                          title="make deposit"
                           action={() =>
                             this.cool_modal_deposit?.toggle_show_modal()
                           }
+                          style={{paddingHorizontal: wp(2.8)}}
                           accent
                           capitalise
                         />
@@ -407,26 +419,38 @@ class Offer extends React.Component {
                       )
                     ) : status === 'awaiting confirmation' ? (
                       disputable ? (
-                        <Text_btn
-                          text={
-                            requested_time
-                              ? 'awaiting time extension'
-                              : 'request time extension'
-                          }
-                          action={this.request_time_extension}
-                          capitalise
-                          accent
-                          disabled={requested_time}
-                        />
+                        <Bg_view style={{alignItems: 'center'}}>
+                          <Fr_text centralise>
+                            Need more time to confirm transaction?{' '}
+                          </Fr_text>
+                          <Text_btn
+                            text={
+                              requested_time
+                                ? 'awaiting time extension'
+                                : 'request time extension'
+                            }
+                            action={this.request_time_extension}
+                            capitalise
+                            accent
+                            disabled={requested_time}
+                          />
+                        </Bg_view>
                       ) : (
-                        <Text_btn
-                          text="confirm"
-                          action={() =>
-                            this.cool_modal_confirm?.toggle_show_modal()
-                          }
-                          accent
-                          capitalise
-                        />
+                        <Bg_view style={{alignItems: 'center'}}>
+                          <Fr_text centralise>
+                            Seller has claimed to fulfil transaction, awaiting
+                            your confirmation to proceed.
+                          </Fr_text>
+                          <Text_btn
+                            icon={require('../../android/app/src/main/assets/Icons/accept.png')}
+                            text="confirm"
+                            action={() =>
+                              this.cool_modal_confirm?.toggle_show_modal()
+                            }
+                            accent
+                            capitalise
+                          />
+                        </Bg_view>
                       )
                     ) : status === 'completed' ? null : (
                       <Bg_view horizontal>
@@ -452,15 +476,15 @@ class Offer extends React.Component {
                         style={{
                           borderRightWidth: 1,
                           borderRightColor: '#eee',
-                          // marginTop: 15,
                         }}>
                         <Bg_view flex>
-                          <Fr_text>Having issues?</Fr_text>
+                          <Fr_text size={wp(3.5)}>Having issues?</Fr_text>
                         </Bg_view>
                         <Bg_view flex>
                           <Text_btn
                             icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
                             action={this.go_to_chat}
+                            size={wp(3.5)}
                             text={
                               user._id === Admin_id
                                 ? 'Respond'
@@ -474,26 +498,7 @@ class Offer extends React.Component {
                   </Bg_view>
                 ) : (
                   /* loggeduser is seller */ <Bg_view
-                    horizontal
                     style={{justifyContent: 'center', alignItems: 'center'}}>
-                    {status === 'declined' ? null : !status__ ? (
-                      <Bg_view
-                        style={{
-                          borderRightWidth: 1,
-                          borderRightColor: '#eee',
-                          marginTop: 15,
-                        }}>
-                        <Fr_text>Having issues?</Fr_text>
-                        <Text_btn
-                          icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
-                          action={this.go_to_chat}
-                          accent
-                          text={
-                            user._id === Admin_id ? 'Respond' : `Contact Admin`
-                          }
-                        />
-                      </Bg_view>
-                    ) : null}
                     {status === 'declined' ? null : status ===
                       'accepted' ? null : status === 'in-escrow' ? (
                       disputable ? (
@@ -509,10 +514,20 @@ class Offer extends React.Component {
                           disabled={requested_time}
                         />
                       ) : (
-                        <Small_btn
-                          title="fulfilled?"
-                          action={() => this.fulfil_modal?.toggle_show_modal()}
-                        />
+                        <Bg_view style={{alignItems: 'center'}}>
+                          <Fr_text centralise size={wp(3.5)}>
+                            Offer settlement has been transfered to escrow by
+                            buyer, click fulfil to let us know you have carried
+                            out the transaction
+                          </Fr_text>
+
+                          <Small_btn
+                            title="fulfilled"
+                            action={() =>
+                              this.fulfil_modal?.toggle_show_modal()
+                            }
+                          />
+                        </Bg_view>
                       )
                     ) : status === 'awaiting confirmation' ? (
                       disputable && !requested_time ? (
@@ -544,18 +559,49 @@ class Offer extends React.Component {
                     {status === 'declined' ? (
                       <Text_btn text="Declined!" />
                     ) : null}
+
+                    {status === 'pending' && user._id === seller._id ? (
+                      <Bg_view style={{alignItems: 'center'}}>
+                        <Line />
+                        <Fr_text>New offer placed</Fr_text>
+                        <Bg_view horizontal style={{justifyContent: 'center'}}>
+                          <Small_btn title="accept" action={this.accept} />
+                          {status === 'pending' ? (
+                            <Small_btn
+                              inverted
+                              title="decline"
+                              action={this.decline}
+                            />
+                          ) : null}
+                        </Bg_view>
+                      </Bg_view>
+                    ) : null}
+
+                    {status === 'declined' ? null : !status__ ? (
+                      <Bg_view
+                        horizontal
+                        style={{
+                          borderRightWidth: 1,
+                          borderRightColor: '#eee',
+                          marginTop: 15,
+                        }}>
+                        <Fr_text size={wp(3.5)}>Having issues?</Fr_text>
+                        <Text_btn
+                          icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
+                          action={this.go_to_chat}
+                          size={wp(3.5)}
+                          accent
+                          style={{fontSize: wp(4)}}
+                          text={
+                            user._id === Admin_id ? 'Respond' : `Contact Admin`
+                          }
+                        />
+                      </Bg_view>
+                    ) : null}
                   </Bg_view>
                 )}
               </Bg_view>
             )}
-            {status === 'pending' && user._id === seller._id ? (
-              <Bg_view horizontal style={{justifyContent: 'center'}}>
-                <Small_btn title="accept" action={this.accept} />
-                {status === 'pending' ? (
-                  <Small_btn inverted title="decline" action={this.decline} />
-                ) : null}
-              </Bg_view>
-            ) : null}
             {seller._id === user._id &&
             status === 'in-escrow' ? null : seller._id !== user._id &&
               status === 'awaiting confirmation' ? null : requested_time &&

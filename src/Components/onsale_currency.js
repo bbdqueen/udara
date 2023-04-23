@@ -2,6 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Admin_id, emitter} from '../../Udara';
 import {hp, wp} from '../utils/dimensions';
+import {commalise_figures} from '../utils/functions';
 import {domain, post_request} from '../utils/services';
 import toast from '../utils/toast';
 import Bg_view from './Bg_view';
@@ -185,7 +186,7 @@ class Onsale_currency extends React.Component {
               </Bg_view>
 
               <Fr_text size={wp(3.5)} style={{maxWidth: wp(50)}} opacity={0.8}>
-                {`${Number(value * rate).toFixed()} NGN`}
+                {`${commalise_figures(Number(value * rate).toFixed())} NGN`}
               </Fr_text>
             </Bg_view>
             <Bg_view
@@ -198,7 +199,9 @@ class Onsale_currency extends React.Component {
                 />
                 {minimum_sell_value && minimum_sell_value !== value ? (
                   <Fr_text bold size={wp(4.5)} style={{maxWidth: wp(50)}}>
-                    {`${Number(minimum_sell_value).toFixed(2)} `}
+                    {`${commalise_figures(
+                      Number(minimum_sell_value).toFixed(2),
+                    )} `}
                   </Fr_text>
                 ) : null}
                 {minimum_sell_value && minimum_sell_value !== value ? (
@@ -206,7 +209,7 @@ class Onsale_currency extends React.Component {
                 ) : null}
                 <Bg_view no_bg horizontal style={{alignItems: 'center'}}>
                   <Fr_text bold size={wp(4.5)} style={{maxWidth: wp(50)}}>
-                    {`${Number(value).toFixed(2)} `}
+                    {`${commalise_figures(Number(value).toFixed(2))} `}
                   </Fr_text>
                   <Icon icon={icon} />
                 </Bg_view>
@@ -257,7 +260,9 @@ class Onsale_currency extends React.Component {
                 <Fr_text
                   size={wp(3.5)}
                   style={{maxWidth: wp(50)}}
-                  opacity={0.8}>{`x ${Number(rate || 0).toFixed(2)}`}</Fr_text>
+                  opacity={0.8}>{`x ${commalise_figures(
+                  Number(rate || 0).toFixed(2),
+                )}`}</Fr_text>
               </Bg_view>
             </Bg_view>
           </View>

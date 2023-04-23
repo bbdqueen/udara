@@ -111,14 +111,29 @@ class Relogin extends React.Component {
                         action={this.login}
                       />
 
-                      <Bg_view flex style={{alignItems: 'center'}}>
-                        <Text_btn
-                          text="Forgot password?"
-                          accent
-                          action={() =>
-                            navigation.navigate('forgot_password', {email})
-                          }
-                        />
+                      <Bg_view
+                        flex
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          flexDirection: 'row',
+                        }}>
+                        <Bg_view flex>
+                          <Text_btn
+                            text="Switch Accounts"
+                            accent
+                            action={() => navigation.navigate('login', {email})}
+                          />
+                        </Bg_view>
+                        <Bg_view flex>
+                          <Text_btn
+                            text="Forgot password?"
+                            accent
+                            action={() =>
+                              navigation.navigate('forgot_password', {email})
+                            }
+                          />
+                        </Bg_view>
                       </Bg_view>
                     </Bg_view>
                   </Bg_view>

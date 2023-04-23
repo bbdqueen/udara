@@ -19,7 +19,7 @@ import Withdraw from '../Components/withdraw';
 import Transactions from '../Components/transactions';
 import Currencies from '../Components/currencies';
 import Buy from '../Components/buy';
-import Paycheck from '../Components/paycheck';
+import {commalise_figures} from '../utils/functions';
 
 let alphabetic_naming = new Object();
 let currencies = new Array();
@@ -56,7 +56,7 @@ class Wallet extends React.Component {
   buy = () => this.cool_modal_buy?.toggle_show_modal();
 
   format_balance = balance => {
-    return Number(balance).toFixed(2);
+    return commalise_figures(Number(balance).toFixed(2));
   };
 
   wallet_balance = (balance, profits) => {
@@ -154,7 +154,7 @@ class Wallet extends React.Component {
           }}
           right_icon={
             <Icon
-              icon="buy_wine_colour_icon.png"
+              icon={require('../../android/app/src/main/assets/Icons/buy_wine_colour_icon.png')}
               style={{height: wp(5), width: wp(5), marginRight: wp(1)}}
             />
           }
@@ -170,7 +170,7 @@ class Wallet extends React.Component {
           }}
           icon={
             <Icon
-              icon="forward_arrow_icon.png"
+              icon={require('../../android/app/src/main/assets/Icons/forward_arrow_icon.png')}
               style={{height: wp(5), width: wp(5), marginRight: wp(1.4)}}
             />
           }

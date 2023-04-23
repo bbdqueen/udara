@@ -2,7 +2,7 @@ import React from 'react';
 import {TouchableNativeFeedback, View} from 'react-native';
 import {emitter} from '../../Udara';
 import {hp, wp} from '../utils/dimensions';
-import {format_quick_time} from '../utils/functions';
+import {commalise_figures, format_quick_time} from '../utils/functions';
 import {post_request} from '../utils/services';
 import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
@@ -82,8 +82,8 @@ class Transaction extends React.Component {
                   style={{alignItems: 'center', justifyContent: 'flex-end'}}>
                   <Fr_text size={wp(to_currency ? 3.5 : 4)} bold>{` ${
                     to_currency || debit ? '' : '+'
-                  }${Number(debit ? from_value * -1 : from_value).toFixed(
-                    2,
+                  }${commalise_figures(
+                    Number(debit ? from_value * -1 : from_value).toFixed(2),
                   )} ${'NGN'}`}</Fr_text>
                 </Bg_view>
               </Bg_view>

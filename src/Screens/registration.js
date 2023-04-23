@@ -6,6 +6,7 @@ import Country_codes from '../Components/country_codes';
 import Fr_text from '../Components/Fr_text';
 import Icon from '../Components/Icon';
 import Stretched_button from '../Components/Stretched_button';
+import Text_btn from '../Components/Text_btn';
 import {hp, wp} from '../utils/dimensions';
 import {email_regex} from '../utils/functions';
 import {post_request} from '../utils/services';
@@ -54,7 +55,8 @@ class Registration extends React.Component {
   };
 
   render = () => {
-    let {country_code, loading, email} = this.state;
+    let {navigation} = this.props;
+    let {loading, email} = this.state;
 
     return (
       <Bg_view flex>
@@ -92,7 +94,7 @@ class Registration extends React.Component {
                 style={{
                   backgroundColor: '#fff',
                   width: wp(88.8),
-                  height: hp(30),
+                  // height: hp(30),
                   justifyContent: 'center',
                   borderRadius: wp(5.6),
                   padding: wp(5.6),
@@ -155,6 +157,14 @@ class Registration extends React.Component {
                   style={{marginHorizontal: 0, marginTop: hp(4)}}
                   action={this.get_code}
                 />
+
+                <Bg_view style={{alignItems: 'center'}}>
+                  <Text_btn
+                    accent
+                    text="Login"
+                    action={() => navigation.navigate('login')}
+                  />
+                </Bg_view>
               </Bg_view>
             </Bg_view>
             <Cool_modal ref={cool_modal => (this.cool_modal = cool_modal)}>

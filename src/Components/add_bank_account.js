@@ -97,6 +97,7 @@ class Add_bank_account extends React.Component {
         <Bg_view style={{padding: wp(5.6)}}>
           <Bg_view style={{marginVertical: hp(1.4), alignItems: 'center'}}>
             <Text_btn
+              accent
               text={(bank && bank.name) || 'Select Bank'}
               action={() =>
                 this.get_banks && this.get_banks.toggle_show_modal()
@@ -116,7 +117,7 @@ class Add_bank_account extends React.Component {
           <Loadindicator />
         ) : (
           <Bg_view style={{alignItems: 'center'}}>
-            <Fr_text>Account Name</Fr_text>
+            {account_name ? <Fr_text>Account Name</Fr_text> : null}
             <Text_btn text={account_name || message} />
           </Bg_view>
         )}

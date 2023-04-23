@@ -107,6 +107,7 @@ class Bank_accounts extends React.Component {
                         }}>
                         <Text_btn
                           text="Add bank"
+                          accent
                           action={
                             this.toggle_new_bank_account?.toggle_show_modal
                           }
