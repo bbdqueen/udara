@@ -49,7 +49,7 @@ class Registration extends React.Component {
     let res = await this.request_code();
     this.setState({loading: false});
 
-    res.trim().toLowerCase() === email.trim().toLowerCase()
+    res?.trim()?.toLowerCase() === email?.trim().toLowerCase()
       ? navigation.navigate('verification', {email, country_code})
       : toast('Error, something went wrong.');
   };

@@ -12,6 +12,7 @@ import {post_request} from '../utils/services';
 class Congratulation extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {};
   }
 
@@ -19,6 +20,8 @@ class Congratulation extends React.Component {
     let {navigation, route} = this.props;
     let {user, country_code} = route.params;
     let {username, phone} = this.state;
+
+    if (!phone_regex.test(phone) || !username) return;
 
     this.setState({loading: true});
 
@@ -33,97 +36,98 @@ class Congratulation extends React.Component {
     let {username, phone, loading} = this.state;
 
     return (
-      <ScrollView>
+      <Bg_view flex>
         <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
-          <Bg_view style={{alignItems: 'center', paddingTop: hp(10)}} flex>
-            <Icon
-              icon="Verification_2.png"
-              style={{height: wp(30), width: wp(100)}}
-            />
-
-            <Fr_text bold="900" size={wp(7)} color="maroon">
-              Congratulation!
-            </Fr_text>
-            <Fr_text>Setup your user profile details</Fr_text>
-            <Bg_view
-              style={{
-                backgroundColor: '#fff',
-                width: wp(88.8),
-                marginTop: hp(5),
-                minHeight: hp(30),
-                justifyContent: 'center',
-                borderRadius: wp(5.6),
-                padding: wp(5.6),
-                marginBottom: hp(10),
-                elevation: 10,
-                shadowColor: '#000',
-              }}>
-              <Bg_view
-                style={{
-                  height: hp(7.5),
-                  borderWidth: 1,
-                  borderColor: '#ccc',
-                  borderRadius: wp(4),
-                  marginTop: hp(4),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: wp(4),
-                  paddingRight: wp(2.8),
-                }}>
-                <TextInput
-                  placeholder="Username"
-                  placeholderTextColor="#ccc"
-                  keyboardType="text"
-                  onChangeText={username => this.setState({username})}
-                  value={username}
-                  style={{
-                    flex: 1,
-                    fontSize: wp(4.5),
-                    color: '#28100B',
-                    marginRight: wp(1.4),
-                    fontWeight: 'bold',
-                  }}
-                />
-              </Bg_view>
-              <Bg_view
-                style={{
-                  height: hp(7.5),
-                  borderWidth: 1,
-                  borderColor: '#ccc',
-                  borderRadius: wp(4),
-                  marginTop: hp(4),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: wp(4),
-                  paddingRight: wp(2.8),
-                }}>
-                <TextInput
-                  placeholder="Phone"
-                  placeholderTextColor="#ccc"
-                  keyboardType="decimal-pad"
-                  onChangeText={phone => this.setState({phone})}
-                  value={phone}
-                  style={{
-                    flex: 1,
-                    fontSize: wp(4.5),
-                    color: '#28100B',
-                    marginRight: wp(1.4),
-                    fontWeight: 'bold',
-                  }}
-                />
-              </Bg_view>
-
-              <Stretched_button
-                title="done!"
-                loading={loading}
-                disabled={!phone_regex.test(phone) || !username}
-                action={this.done}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Bg_view style={{alignItems: 'center', paddingTop: hp(10)}} flex>
+              <Icon
+                icon="Verification_2.png"
+                style={{height: wp(30), width: wp(100)}}
               />
-              {/* </Bg_view> */}
+
+              <Fr_text bold="900" size={wp(7)} color="maroon">
+                Congratulation!
+              </Fr_text>
+              <Fr_text>Setup your user profile details</Fr_text>
+              <Bg_view
+                style={{
+                  backgroundColor: '#fff',
+                  width: wp(88.8),
+                  marginTop: hp(5),
+                  minHeight: hp(30),
+                  justifyContent: 'center',
+                  borderRadius: wp(5.6),
+                  padding: wp(5.6),
+                  marginBottom: hp(10),
+                  elevation: 10,
+                  shadowColor: '#000',
+                }}>
+                <Bg_view
+                  style={{
+                    height: hp(7.5),
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: wp(4),
+                    marginTop: hp(4),
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: wp(4),
+                    paddingRight: wp(2.8),
+                  }}>
+                  <TextInput
+                    placeholder="Username"
+                    placeholderTextColor="#ccc"
+                    keyboardType="text"
+                    onChangeText={username => this.setState({username})}
+                    value={username}
+                    style={{
+                      flex: 1,
+                      fontSize: wp(4.5),
+                      color: '#28100B',
+                      marginRight: wp(1.4),
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </Bg_view>
+                <Bg_view
+                  style={{
+                    height: hp(7.5),
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: wp(4),
+                    marginTop: hp(4),
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: wp(4),
+                    paddingRight: wp(2.8),
+                  }}>
+                  <TextInput
+                    placeholder="Phone"
+                    placeholderTextColor="#ccc"
+                    keyboardType="decimal-pad"
+                    onChangeText={phone => this.setState({phone})}
+                    value={phone}
+                    style={{
+                      flex: 1,
+                      fontSize: wp(4.5),
+                      color: '#28100B',
+                      marginRight: wp(1.4),
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </Bg_view>
+
+                <Stretched_button
+                  title="done!"
+                  loading={loading}
+                  disabled={!phone || !username}
+                  action={this.done}
+                />
+              </Bg_view>
             </Bg_view>
-          </Bg_view>
+          </ScrollView>
         </KeyboardAvoidingView>
-      </ScrollView>
+      </Bg_view>
     );
   };
 }

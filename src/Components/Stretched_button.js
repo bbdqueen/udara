@@ -24,6 +24,7 @@ class Stretched_button extends React.Component {
 
     if (loading) disabled = loading;
 
+    console.log(disabled, title, loading);
     return (
       <View style={{margin: wp(5.6), ...style}}>
         <TouchableWithoutFeedback

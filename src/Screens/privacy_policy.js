@@ -3781,7 +3781,7 @@ class Privacy_policy extends React.Component {
                   lineHeight: hp(4),
                   marginHorizontal: wp(2),
                 }}>
-                (b)
+                (c)
               </Fr_text>
               <Fr_text
                 size={wp(3.8)}
@@ -3800,7 +3800,7 @@ class Privacy_policy extends React.Component {
                   lineHeight: hp(4),
                   marginHorizontal: wp(2),
                 }}>
-                (b)
+                (d)
               </Fr_text>
               <Fr_text
                 size={wp(3.8)}
@@ -3819,7 +3819,7 @@ class Privacy_policy extends React.Component {
                   lineHeight: hp(4),
                   marginHorizontal: wp(2),
                 }}>
-                (b)
+                (e)
               </Fr_text>
               <Fr_text
                 size={wp(3.8)}
@@ -4180,7 +4180,7 @@ class Privacy_policy extends React.Component {
               8.3 Data Subjects can exercise any of their rights by completing
               the Udaralinks’s Subject Access Request (SAR) Form and submitting
               to the Company via udaralinks@udaralinks.com.
-            </Fr_text>{' '}
+            </Fr_text>
             <Fr_text style={{marginVertical: hp(2.8)}}>
               9. TRANSFER OF PERSONAL DATA
             </Fr_text>
@@ -4239,6 +4239,7 @@ class Privacy_policy extends React.Component {
               therefore only transfer Personal Data out of Nigeria on one of the
               following conditions:
             </Fr_text>
+
             <Bg_view horizontal style={{marginBottom: hp(1.4)}}>
               <Fr_text
                 size={wp(3.8)}

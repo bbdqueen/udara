@@ -46,6 +46,8 @@ class Verification extends React.Component {
       emitter.emit('update_email', {email, country_code});
       navigation.pop();
       navigation.navigate('account');
+
+      this.setState({loading: false});
     } else {
       toast("Err, couldn't conclude request.");
       this.setState({loading: false});
@@ -69,7 +71,7 @@ class Verification extends React.Component {
     });
 
     this.setState({loading: false});
-    if (verified.user && verified.wallet) {
+    if (verified?.user && verified?.wallet) {
       emitter.emit('verified', {...verified, country_code});
       navigation.pop();
       navigation.navigate('congratulation', {
