@@ -114,12 +114,14 @@ const commalise_figures_ = figure => {
 const commalise_figures = (value, no_fixed) => {
   if (typeof value !== 'number') {
     if (typeof value === 'string') {
-      if (/[A-Za-z]\-/.test(value)) return value;
+      if (/[A-Za-z]{1,}\-/.test(value)) return value;
       else value = Number(value);
 
       if (!value) return;
     } else return value;
   }
+
+  if (value) return '0.00';
 
   let integer = Math.floor(value);
   let decimal = (value - integer).toFixed(2).toString();

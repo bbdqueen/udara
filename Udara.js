@@ -311,8 +311,6 @@ class Udara extends React.Component {
         this.pending_payloads.map(({event, data}) => sock.emit(event, data));
         this.pending_payloads.clear();
       }
-
-      console.log(socket_id);
     });
 
     sock.on('wallet_topup', ({amount}) => {
@@ -518,21 +516,21 @@ class Udara extends React.Component {
     emitter.listen('blur_message_input', this.blur_message_input);
     emitter.listen('update_user_data', this.update_user_data);
 
-    this._pan_responder = PanResponder.create({
-      onStartShouldSetPanResponder: () => {
-        this.reset_timer();
-        return true;
-      },
-      onMoveShouldSetPanResponder: () => true,
-      onStartShouldSetPanResponderCapture: () => {
-        this.reset_timer();
-        return false;
-      },
-      onMoveShouldSetPanResponderCapture: () => false,
-      onPanResponderTerminationRequest: () => true,
-      onShouldBlockNativeResponder: () => false,
-    });
-    this.timer = setTimeout(this.relogin, this.timeout);
+    // this._pan_responder = PanResponder.create({
+    //   onStartShouldSetPanResponder: () => {
+    //     this.reset_timer();
+    //     return true;
+    //   },
+    //   onMoveShouldSetPanResponder: () => true,
+    //   onStartShouldSetPanResponderCapture: () => {
+    //     this.reset_timer();
+    //     return false;
+    //   },
+    //   onMoveShouldSetPanResponderCapture: () => false,
+    //   onPanResponderTerminationRequest: () => true,
+    //   onShouldBlockNativeResponder: () => false,
+    // });
+    // this.timer = setTimeout(this.relogin, this.timeout);
   };
 
   timeout = 60 * 1000 * 5;
@@ -556,7 +554,7 @@ class Udara extends React.Component {
     emitter.remove_listener('blur_message_input', this.blur_message_input);
     emitter.remove_listener('update_user_data', this.update_user_data);
 
-    clearTimeout(this.timer);
+    // clearTimeout(this.timer);
   };
 
   relogin = () => {
@@ -581,7 +579,8 @@ class Udara extends React.Component {
         <View
           collapsable={false}
           style={{flex: 1}}
-          {...this._pan_responder.panHandlers}>
+          // {...this._pan_responder.panHandlers}
+        >
           {logged === 'fetching' && !relogin ? (
             <Splash />
           ) : logged === true && !relogin ? (

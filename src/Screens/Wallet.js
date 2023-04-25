@@ -56,7 +56,7 @@ class Wallet extends React.Component {
   buy = () => this.cool_modal_buy?.toggle_show_modal();
 
   format_balance = balance => {
-    return commalise_figures(Number(balance).toFixed(2));
+    return balance ? commalise_figures(Number(balance).toFixed(2)) : '0.00';
   };
 
   wallet_balance = (balance, profits) => {

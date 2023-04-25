@@ -114,6 +114,7 @@ class Home extends React.Component {
       <User.Consumer>
         {user => {
           this.user = user;
+
           let {wallet, username, _id} = user;
           let {fav_currency, profits} = wallet;
 
@@ -187,9 +188,13 @@ class Home extends React.Component {
                               Total balance
                             </Fr_text>
                             <Fr_text color="#fff" bold="900" size={wp(6.5)}>
-                              {`${commalise_figures(
-                                wallet.naira.toFixed(2),
-                              )} NGN`}
+                              {`${
+                                wallet.naira
+                                  ? commalise_figures(
+                                      Number(wallet.naira).toFixed(2),
+                                    )
+                                  : '0.00'
+                              } NGN`}
                             </Fr_text>
                             <Bg_view no_bg>
                               <Fr_text

@@ -37,9 +37,9 @@ class Congratulation extends React.Component {
 
     return (
       <Bg_view flex>
-        <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
+        <KeyboardAvoidingView style={{flex: 1}}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Bg_view style={{alignItems: 'center', paddingTop: hp(10)}} flex>
+            <Bg_view style={{alignItems: 'center', paddingTop: hp(10)}}>
               <Icon
                 icon="Verification_2.png"
                 style={{height: wp(30), width: wp(100)}}
