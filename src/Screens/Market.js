@@ -19,13 +19,6 @@ import {hp, wp} from '../utils/dimensions';
 import {capitalise} from '../utils/functions';
 import {domain, post_request} from '../utils/services';
 
-let currencies_alignment = new Array(
-  'dollar',
-  'pound',
-  'euro',
-  'canadian dollar',
-);
-
 class Market extends React.Component {
   constructor(props) {
     super(props);
@@ -64,6 +57,15 @@ class Market extends React.Component {
       let {onsales: onsales_, currencies: currencies_} = onsales;
       onsales = onsales_;
       currencies = currencies_?.sort((a, b) => a.name > b.name);
+
+      currencies = currencies?.sort((c1, c2) => {
+        let a_name = c1.name.toLowerCase(),
+          b_name = c2.name.toLowerCase();
+
+        if (a_name === 'dollar' && b_name !== 'dollar') return -1;
+        else if (a_name !== 'dollar' && b_name === 'dollar') return 1;
+        else return 0;
+      });
     }
 
     this.setState(mount ? {onsales, currencies} : {onsales});

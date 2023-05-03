@@ -54,7 +54,7 @@ class Deposit_to_escrow extends React.Component {
     let {amount, offer_rate} = offer;
     let {alphabetic_name, seller} = onsale;
 
-    let cost = 30004000 || amount * offer_rate;
+    let cost = amount * offer_rate;
 
     return (
       <User.Consumer>

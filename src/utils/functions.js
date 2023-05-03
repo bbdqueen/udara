@@ -45,7 +45,7 @@ const sentence = text => {
     }
   }
   text = text.split('');
-  text[index] = text[index].toUpperCase();
+  if (text[index]) text[index] = text[index].toUpperCase();
 
   return text.join('');
 };
@@ -121,7 +121,7 @@ const commalise_figures = (value, no_fixed) => {
     } else return value;
   }
 
-  if (value) return '0.00';
+  if (!value) return '0.00';
 
   let integer = Math.floor(value);
   let decimal = (value - integer).toFixed(2).toString();
