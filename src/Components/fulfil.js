@@ -7,6 +7,7 @@ import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
 import Icon from './Icon';
 import Line from './line';
+import Loadindicator from './load_indicator';
 import Offer from './offer';
 import Small_btn from './small_button';
 
@@ -18,29 +19,33 @@ class Fulfil extends React.Component {
   }
 
   true = async () => {
-    let {offer, onsale, close_modal} = this.props;
+    if (this.state.loading) return;
 
-    let res = await post_request('fulfil_offer', {
-      offer: offer._id,
-      onsale: onsale._id,
-      buyer: offer.user?._id,
-      seller: onsale.seller?._id,
+    this.setState({loading: true}, async () => {
+      let {offer, onsale, close_modal} = this.props;
+
+      let res = await post_request('fulfil_offer', {
+        offer: offer._id,
+        onsale: onsale._id,
+        buyer: offer.user?._id,
+        seller: onsale.seller?._id,
+      });
+      Sock_offer_status(offer._id, 'awaiting confirmation', offer.user?._id);
+      res
+        ? emitter.emit('offer_fulfilled', {
+            offer: offer._id,
+            timestamp: res.timestamp,
+          })
+        : toast('Err, something went wrong.');
+
+      close_modal();
     });
-    Sock_offer_status(offer._id, 'awaiting confirmation', offer.user?._id);
-    res
-      ? emitter.emit('offer_fulfilled', {
-          offer: offer._id,
-          timestamp: res.timestamp,
-        })
-      : toast('Err, something went wrong.');
-
-    close_modal();
   };
 
   false = () => this.props.close_modal();
 
   render = () => {
-    let {close_modal, navigation, onsale, offer} = this.props;
+    let {close_modal, navigation, onsale, loading, offer} = this.props;
     let {user} = offer;
 
     return (
@@ -75,10 +80,14 @@ class Fulfil extends React.Component {
             no_foot
           />
 
-          <Bg_view horizontal style={{justifyContent: 'center'}}>
-            <Small_btn title="true" action={this.true} />
-            <Small_btn inverted title="false" action={this.false} />
-          </Bg_view>
+          {loading ? (
+            <Loadindicator />
+          ) : (
+            <Bg_view horizontal style={{justifyContent: 'center'}}>
+              <Small_btn title="true" action={this.true} />
+              <Small_btn inverted title="false" action={this.false} />
+            </Bg_view>
+          )}
         </Bg_view>
       </Bg_view>
     );

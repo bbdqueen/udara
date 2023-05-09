@@ -36,22 +36,14 @@ class Market extends React.Component {
     if (refreshing) {
       this.setState({onsales: null});
     }
-    let {currency, currencies, my_sales, page, page_size} = this.state;
-    let onsales = await post_request(
-      my_sales ? `my_sales/${this.loggeduser._id}` : 'onsale',
-      my_sales
-        ? {
-            skip: page * page_size,
-            limit: page_size,
-          }
-        : {
-            currency,
-            fetch_currencies: !!mount,
-            skip: page * page_size,
-            limit: page_size,
-            user: this.loggeduser._id,
-          },
-    );
+    let {currency, currencies, page, page_size} = this.state;
+    let onsales = await post_request('onsale', {
+      currency,
+      fetch_currencies: !!mount,
+      skip: page * page_size,
+      limit: page_size,
+      user: this.loggeduser._id,
+    });
 
     if (!!mount) {
       let {onsales: onsales_, currencies: currencies_} = onsales;
@@ -71,9 +63,7 @@ class Market extends React.Component {
     this.setState(mount ? {onsales, currencies} : {onsales});
   };
 
-  componentDidMount = async () => {
-    await this.fetch_currencies(undefined, true);
-  };
+  componentDidMount = async () => await this.fetch_currencies(undefined, true);
 
   toggle_search = () =>
     this.setState({show_search: !this.state.show_search, search_value: ''});

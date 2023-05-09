@@ -78,7 +78,12 @@ class Onsale_details extends React.Component {
     if (res) {
       let {my_offers} = this.state;
       my_offers = new Array(res, ...my_offers);
-      this.setState({my_offers, amount: onsale.value, sending_offer: false});
+      this.setState({
+        my_offers,
+        amount: onsale.value,
+        sending_offer: false,
+        not_ready_for_transaction: true,
+      });
     } else {
       toast("Couldn't place offer at this time.");
       this.setState({sending_offer: false});
@@ -88,7 +93,8 @@ class Onsale_details extends React.Component {
   toggle_send_offer = () => this.send_offer_modal?.toggle();
 
   render() {
-    let {amount, sending_offer, my_offers} = this.state;
+    let {amount, sending_offer, not_ready_for_transaction, my_offers} =
+      this.state;
     let {route, navigation} = this.props;
     let {onsale, user} = route.params;
 
@@ -140,75 +146,80 @@ class Onsale_details extends React.Component {
             <Loadindicator />
           )}
 
-          <Fr_text
-            centralise
-            size={wp(5)}
-            style={{
-              margin: wp(4),
-              marginBottom: wp(2.8),
-              marginHorizontal: wp(25),
-            }}>
-            {my_offers?.length
-              ? 'Do you want to buy more?'
-              : 'How much do you want to buy?'}
-          </Fr_text>
-
-          <Bg_view
-            style={{
-              margin: wp(4),
-              borderWidth: 1,
-              borderColor: '#ccc',
-              marginTop: 0,
-              borderRadius: wp(4),
-            }}>
-            <Bg_view
-              horizontal
-              shadowed
-              style={{
-                alignItems: 'center',
-                borderRadius: wp(1.4),
-                margin: wp(2.8),
-              }}>
-              <TextInput
-                placeholder="Enter amount"
-                value={String(amount)}
-                keyboardType="phone-pad"
-                onChangeText={this.set_amount}
+          {my_offers?.length &&
+          (not_ready_for_transaction ||
+            onsale.not_ready_for_transaction) ? null : (
+            <>
+              <Fr_text
+                centralise
+                size={wp(5)}
                 style={{
-                  flex: 1,
-                  borderRadius: wp(1),
-                  padding: wp(2.8),
-                  fontSize: wp(5),
-                  color: '#000',
-                }}
-              />
-              <View>
+                  margin: wp(4),
+                  marginBottom: wp(2.8),
+                  marginHorizontal: wp(25),
+                }}>
+                {my_offers?.length
+                  ? 'Do you want to buy more?'
+                  : 'How much do you want to buy?'}
+              </Fr_text>
+
+              <Bg_view
+                style={{
+                  margin: wp(4),
+                  borderWidth: 1,
+                  borderColor: '#ccc',
+                  marginTop: 0,
+                  borderRadius: wp(4),
+                }}>
                 <Bg_view
                   horizontal
+                  shadowed
                   style={{
-                    borderRadius: wp(1),
-                    height: hp(7.5),
-                    padding: wp(2.8),
-                    borderLeftColor: '#ccc',
-                    borderLeftWidth: 1,
+                    alignItems: 'center',
+                    borderRadius: wp(1.4),
+                    margin: wp(2.8),
                   }}>
-                  <Icon icon={flag} />
-                  <Fr_text style={{marginLeft: wp(1.4)}}>
-                    {alphabetic_name}
-                  </Fr_text>
+                  <TextInput
+                    placeholder="Enter amount"
+                    value={String(amount)}
+                    keyboardType="phone-pad"
+                    onChangeText={this.set_amount}
+                    style={{
+                      flex: 1,
+                      borderRadius: wp(1),
+                      padding: wp(2.8),
+                      fontSize: wp(5),
+                      color: '#000',
+                    }}
+                  />
+                  <View>
+                    <Bg_view
+                      horizontal
+                      style={{
+                        borderRadius: wp(1),
+                        height: hp(7.5),
+                        padding: wp(2.8),
+                        borderLeftColor: '#ccc',
+                        borderLeftWidth: 1,
+                      }}>
+                      <Icon icon={flag} />
+                      <Fr_text style={{marginLeft: wp(1.4)}}>
+                        {alphabetic_name}
+                      </Fr_text>
+                    </Bg_view>
+                  </View>
                 </Bg_view>
-              </View>
-            </Bg_view>
 
-            {amount && amount > 0 ? (
-              <Stretched_button
-                loading={sending_offer}
-                title="proceed"
-                action={this.toggle_send_offer || this.send_offer}
-              />
-            ) : null}
-          </Bg_view>
-
+                {amount && amount > 0 ? (
+                  <Stretched_button
+                    loading={sending_offer}
+                    title="proceed"
+                    action={this.toggle_send_offer || this.send_offer}
+                  />
+                ) : null}
+              </Bg_view>
+            </>
+          )}
           {offer_terms ? (
             <Bg_view
               style={{

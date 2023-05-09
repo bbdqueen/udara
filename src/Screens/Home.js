@@ -158,6 +158,11 @@ class Home extends React.Component {
                         action={() => navigation.navigate('admin_messages')}
                       />
                     ) : null}
+
+                    <Icon
+                      icon="refresh.png"
+                      action={() => emitter.emit('refresh_wallet')}
+                    />
                   </Bg_view>
                   <TouchableWithoutFeedback
                     onPress={() =>

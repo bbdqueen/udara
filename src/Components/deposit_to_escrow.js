@@ -22,30 +22,31 @@ class Deposit_to_escrow extends React.Component {
   deposit = async () => {
     if (this.state.loading) return;
 
-    this.setState({loading: true});
-    let {onsale, offer, close_modal} = this.props;
+    this.setState({loading: true}, async () => {
+      let {onsale, offer, close_modal} = this.props;
 
-    let {amount, offer_rate} = offer;
+      let {amount, offer_rate} = offer;
 
-    let res = await post_request('deposit_to_escrow', {
-      offer: offer._id,
-      onsale: onsale._id,
-      seller: onsale.seller?._id,
-      buyer_wallet: offer.user.wallet,
-    });
-
-    Sock_offer_status(offer._id, 'in-escrow', onsale.seller?._id);
-
-    if (res) {
-      emitter.emit('deduct_wallet', {value: amount * offer_rate});
-      emitter.emit('offer_deposit', {
+      let res = await post_request('deposit_to_escrow', {
         offer: offer._id,
-        timestamp: res.timestamp,
+        onsale: onsale._id,
+        seller: onsale.seller?._id,
+        buyer_wallet: offer.user.wallet,
       });
-      res.transaction && emitter.emit('new_transaction', res.transaction);
-    } else toast('Err, something went wrong.');
 
-    this.setState({loading: false}, close_modal);
+      Sock_offer_status(offer._id, 'in-escrow', onsale.seller?._id);
+
+      if (res) {
+        emitter.emit('deduct_wallet', {value: amount * offer_rate});
+        emitter.emit('offer_deposit', {
+          offer: offer._id,
+          timestamp: res.timestamp,
+        });
+        res.transaction && emitter.emit('new_transaction', res.transaction);
+      } else toast('Err, something went wrong.');
+
+      this.setState({loading: false}, close_modal);
+    });
   };
 
   render = () => {

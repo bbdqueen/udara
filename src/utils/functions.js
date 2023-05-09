@@ -77,6 +77,37 @@ const format_quick_time = timestamp => {
   else return 'Just now';
 };
 
+const month_index = new Object({
+  0: 'jan',
+  1: 'feb',
+  2: 'mar',
+  3: 'apr',
+  4: 'may',
+  5: 'jun',
+  6: 'jul',
+  7: 'aug',
+  8: 'sep',
+  9: 'oct',
+  10: 'nov',
+  11: 'dec',
+});
+
+const date_string = timestamp => {
+  let date = new Date(timestamp);
+  return `${date.getDate().toString().padStart(2, '0')} ${to_title(
+    month_index[date.getMonth()],
+  )} ${date.getFullYear()}`;
+};
+
+const time_string = timestamp => {
+  let date = new Date(timestamp);
+
+  return `${date.getHours().toString().padStart(2, '0')}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}`;
+};
+
 let phone_regex =
   /^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm;
 
@@ -123,14 +154,29 @@ const commalise_figures = (value, no_fixed) => {
 
   if (!value) return '0.00';
 
+  let sign = value > 0 ? 1 : -1;
+  value = Math.abs(value);
+
   let integer = Math.floor(value);
   let decimal = (value - integer).toFixed(2).toString();
 
   let commalised = commalise_figures_(integer);
 
+  if (sign === -1) commalised = `-${commalised}`;
+
   return no_fixed
     ? commalised
     : `${commalised}${decimal.slice(decimal.indexOf('.'))}`;
+};
+
+const to_title = string => {
+  if (!string) return string;
+
+  let str = '';
+  string.split(' ').map(s => {
+    if (s) str += ' ' + s[0].toUpperCase() + s.slice(1);
+  });
+  return str.trim();
 };
 
 export {
@@ -146,4 +192,8 @@ export {
   format_quick_time,
   generate_random_string,
   commalise_figures,
+  date_string,
+  month_index,
+  time_string,
+  to_title,
 };

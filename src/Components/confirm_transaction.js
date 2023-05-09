@@ -21,22 +21,23 @@ class Confirm_transaction extends React.Component {
     let {loading} = this.state;
     if (loading) return;
 
-    this.setState({loading});
-    let {offer, onsale, close_modal} = this.props;
+    this.setState({loading: true}, async () => {
+      let {offer, onsale, close_modal} = this.props;
 
-    let res = await post_request('confirm_offer', {
-      offer: offer._id,
-      onsale: onsale._id,
-      buyer: offer.user._id,
-      seller: onsale.seller._id,
-      seller_wallet: onsale.seller.wallet,
+      let res = await post_request('confirm_offer', {
+        offer: offer._id,
+        onsale: onsale._id,
+        buyer: offer.user._id,
+        seller: onsale.seller._id,
+        seller_wallet: onsale.seller.wallet,
+      });
+      res
+        ? emitter.emit('offer_confirmed', offer._id)
+        : toast('Err, something went wrong.');
+      Sock_offer_status(offer._id, 'completed', onsale.seller?._id);
+
+      close_modal();
     });
-    res
-      ? emitter.emit('offer_confirmed', offer._id)
-      : toast('Err, something went wrong.');
-    Sock_offer_status(offer._id, 'completed', onsale.seller?._id);
-
-    close_modal();
   };
 
   decline = () => {
@@ -53,6 +54,7 @@ class Confirm_transaction extends React.Component {
   render = () => {
     let {close_modal, from_dispute, user, onsale, navigation, offer} =
       this.props;
+    let {loading} = this.state;
 
     return (
       <Bg_view>
@@ -86,7 +88,7 @@ class Confirm_transaction extends React.Component {
             no_foot
           />
 
-          {this.state.loading ? (
+          {loading ? (
             <Loadindicator />
           ) : (
             <Bg_view horizontal style={{justifyContent: 'center'}}>

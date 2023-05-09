@@ -2,7 +2,12 @@ import React from 'react';
 import {TouchableNativeFeedback, View} from 'react-native';
 import {emitter} from '../../Udara';
 import {hp, wp} from '../utils/dimensions';
-import {commalise_figures, format_quick_time} from '../utils/functions';
+import {
+  commalise_figures,
+  date_string,
+  format_quick_time,
+  time_string,
+} from '../utils/functions';
 import {post_request} from '../utils/services';
 import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
@@ -66,7 +71,7 @@ class Transaction extends React.Component {
             <Bg_view
               style={{justifyContent: 'space-between', alignItems: 'center'}}
               horizontal>
-              <Bg_view>
+              <Bg_view style={{flex: 6}}>
                 <Fr_text
                   elipseSizeMode="tail"
                   numberOfLines={1}
@@ -74,9 +79,14 @@ class Transaction extends React.Component {
                   bold>
                   {title}
                 </Fr_text>
-                <Fr_text size={wp(3)}>{format_quick_time(created)}</Fr_text>
+                <Fr_text size={wp(3)}>
+                  {Date.now() - created > 432000000
+                    ? `${date_string(created)}, ${time_string(created)}`
+                    : format_quick_time(created)}
+                </Fr_text>
               </Bg_view>
-              <Bg_view style={{marginLeft: wp(2.8)}}>
+              <Bg_view
+                style={{marginLeft: wp(2.8), flex: 4, alignItems: 'flex-end'}}>
                 <Bg_view
                   horizontal
                   style={{alignItems: 'center', justifyContent: 'flex-end'}}>

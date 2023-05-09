@@ -436,7 +436,11 @@ class Offer extends React.Component {
                           />
                         </Bg_view>
                       ) : (
-                        <Bg_view style={{alignItems: 'center'}}>
+                        <Bg_view
+                          style={{
+                            alignItems: 'center',
+                            marginVertical: hp(1.4),
+                          }}>
                           <Fr_text centralise>
                             Seller has claimed to fulfil transaction, awaiting
                             your confirmation to proceed.

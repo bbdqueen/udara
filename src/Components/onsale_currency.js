@@ -10,6 +10,7 @@ import Cool_modal from './cool_modal';
 import Fr_text from './Fr_text';
 import Icon from './Icon';
 import Line from './line';
+import Loadindicator from './load_indicator';
 import Proceed_to_purchase from './proceed_to_purchase';
 import Small_btn from './small_button';
 import Text_btn from './Text_btn';
@@ -33,44 +34,28 @@ class Onsale_currency extends React.Component {
         this.setState({show_btn: false});
     };
 
-    this.remove_sale_listener = onsale_id =>
+    this.remove_from_market_listener = onsale_id =>
       onsale._id === onsale_id && this.setState({removed: true});
 
     emitter.listen('show_onsale_btn', this.show_onsale_btn);
-    emitter.listen('remove_sale', this.remove_sale_listener);
   };
 
   componentWillUnmount = () => {
     emitter.remove_listener('show_onsale_btn', this.show_onsale_btn);
-    emitter.remove_listener('remove_sale', this.remove_sale_listener);
   };
 
-  remove_sale = async () => {
+  remove_from_market = async () => {
+    let {onsale} = this.props;
+
+    if (this.state.loading) return;
+
     this.setState({loading: true});
-    let {onsale, user, on_remove} = this.props;
-    let {seller, currency, _id} = onsale;
-    if (seller._id !== user._id) {
-      toast('Something is not right!');
-      this.setState({loading: false});
-      return;
-    }
 
-    let response = await post_request('remove_sale', {
-      onsale: _id,
-      currency,
-    });
+    let {_id, currency} = onsale;
 
-    if (response && response.onsale) {
-      on_remove && on_remove();
-      emitter.emit('remove_sale', onsale._id);
-      toast('Currency removed from sale');
-    } else
-      toast(
-        response
-          ? 'Err, something went wrong'
-          : 'It appears your currency has been purchased',
-      );
-    this.setState({loading: false});
+    await post_request('not_ready_for_transaction', {onsale: _id, currency});
+
+    this.setState({ready_for_transaction: false, loading: false});
   };
 
   purchase = async () => {
@@ -140,15 +125,37 @@ class Onsale_currency extends React.Component {
     navigation.navigate('offers', {onsale});
   };
 
+  ready_for_transaction = async () => {
+    let {onsale} = this.props;
+
+    if (this.state.ready) return;
+
+    this.setState({ready: true});
+
+    let {_id, currency} = onsale;
+
+    await post_request('ready_for_transaction', {onsale: _id, currency});
+
+    this.setState({ready_for_transaction: true});
+  };
+
   render = () => {
-    let {show_btn, onsale, removed} = this.state;
+    let {ready_for_transaction, loading, ready, onsale, removed} = this.state;
     if (removed) return null;
 
     let {user, navigation, in_send_offer} = this.props;
     if (!onsale) return null;
 
-    let {to_currency, minimum_sell_value, icon, value, flag, rate, seller} =
-      onsale;
+    let {
+      to_currency,
+      minimum_sell_value,
+      not_ready_for_transaction,
+      icon,
+      value,
+      flag,
+      rate,
+      seller,
+    } = onsale;
 
     return (
       <Bg_view
@@ -267,16 +274,33 @@ class Onsale_currency extends React.Component {
             </Bg_view>
           </View>
         </View>
-        {show_btn ? (
+        {true ? (
           <Bg_view style={{alignItems: 'center'}}>
-            <Bg_view horizontal>
-              <Text_btn accent text="Offers" action={this.offers} />
-              <Text_btn
-                accent
-                text="Remove sale"
-                action={this.remove_sale}
-                style={{marginHorizontal: wp(1.4)}}
-              />
+            <Bg_view horizontal style={{justifyContent: 'center'}}>
+              {ready || loading ? (
+                <Loadindicator />
+              ) : not_ready_for_transaction && !ready_for_transaction ? (
+                <Bg_view
+                  flex
+                  style={{
+                    alignItems: 'center',
+                  }}>
+                  <Text_btn
+                    accent
+                    text="Place in Market"
+                    action={this.ready_for_transaction}
+                  />
+                </Bg_view>
+              ) : (
+                <Bg_view flex style={{alignItems: 'center'}}>
+                  <Text_btn
+                    accent
+                    text="Remove from Market"
+                    action={this.remove_from_market}
+                    style={{marginHorizontal: wp(1.4)}}
+                  />
+                </Bg_view>
+              )}
             </Bg_view>
             <Line />
           </Bg_view>

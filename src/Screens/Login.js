@@ -96,11 +96,14 @@ class Login extends React.Component {
       }));
 
     let result = await post_request('logging_in', {email, key: password});
+
+    console.log(result);
+
     await AsyncStorage.removeItem('new_user');
     this.setState({loading: false});
     result && result.user
       ? emitter.emit('logged_in', {user: result.user, wallet: result.wallet})
-      : toast(result);
+      : toast(result || 'Cannot login at the moment.');
   };
 
   render = () => {

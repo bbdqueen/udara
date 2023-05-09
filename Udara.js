@@ -6,7 +6,7 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {PanResponder, StatusBar, View} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import Splash from './src/Screens/splash';
 import Onboarding from './src/Screens/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
