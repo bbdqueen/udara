@@ -212,7 +212,7 @@ class Market extends React.Component {
                         text={
                           my_sales
                             ? "You don't have any currency onsale"
-                            : `No ${capitalise(currency)} on the market yet.`
+                            : `No ${capitalise(currency)} in the market yet.`
                         }
                       />
                     )

@@ -23,7 +23,10 @@ class Onsale_currency extends React.Component {
     let {onsale} = this.props;
     onsale.likes = onsale.likes || 0;
     onsale.dislikes = onsale.dislikes || 0;
-    this.state = {onsale};
+
+    let {not_ready_for_transaction} = onsale;
+
+    this.state = {onsale, ready_for_transaction: !not_ready_for_transaction};
   }
 
   componentDidMount = () => {
@@ -55,7 +58,7 @@ class Onsale_currency extends React.Component {
 
     await post_request('not_ready_for_transaction', {onsale: _id, currency});
 
-    this.setState({ready_for_transaction: false, loading: false});
+    this.setState({ready_for_transaction: false, loading: false, ready: false});
   };
 
   purchase = async () => {
@@ -136,7 +139,7 @@ class Onsale_currency extends React.Component {
 
     await post_request('ready_for_transaction', {onsale: _id, currency});
 
-    this.setState({ready_for_transaction: true});
+    this.setState({ready_for_transaction: true, ready: false, loading: false});
   };
 
   render = () => {
@@ -146,16 +149,8 @@ class Onsale_currency extends React.Component {
     let {user, navigation, in_send_offer} = this.props;
     if (!onsale) return null;
 
-    let {
-      to_currency,
-      minimum_sell_value,
-      not_ready_for_transaction,
-      icon,
-      value,
-      flag,
-      rate,
-      seller,
-    } = onsale;
+    let {to_currency, minimum_sell_value, icon, value, flag, rate, seller} =
+      onsale;
 
     return (
       <Bg_view
@@ -274,12 +269,12 @@ class Onsale_currency extends React.Component {
             </Bg_view>
           </View>
         </View>
-        {true ? (
+        {seller?._id === user?._id ? (
           <Bg_view style={{alignItems: 'center'}}>
             <Bg_view horizontal style={{justifyContent: 'center'}}>
               {ready || loading ? (
                 <Loadindicator />
-              ) : not_ready_for_transaction && !ready_for_transaction ? (
+              ) : !ready_for_transaction ? (
                 <Bg_view
                   flex
                   style={{
