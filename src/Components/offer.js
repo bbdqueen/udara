@@ -245,7 +245,7 @@ class Offer extends React.Component {
     } = this.props;
     if (!offer) return null;
 
-    let {flag, seller, currency} = onsale;
+    let {flag, seller, currency, alphabetic_name} = onsale;
     let {amount, status, offer_need, offer_rate} = offer;
     if (status_) status = status_;
     new_messages = new_messages || '';
@@ -274,16 +274,21 @@ class Offer extends React.Component {
             <Bg_view horizontal style={{justifyContent: 'space-between'}}>
               <Bg_view style={{flex: 4, flexDirection: 'row'}}>
                 <Icon icon={flag} style={{height: wp(10), width: wp(10)}} />
-                <Bg_view style={{marginLeft: wp(1.4)}}>
+                <Bg_view flex style={{marginLeft: wp(1.4)}}>
                   <Fr_text bold size={wp(4.5)}>
-                    {`${commalise_figures(amount)} ${currency}`}
+                    {`${commalise_figures(amount)} ${alphabetic_name}`}
                   </Fr_text>
                   <Fr_text size={wp(3.5)}>{`x ${commalise_figures(
                     offer_rate,
                   )}`}</Fr_text>
                 </Bg_view>
               </Bg_view>
-              <Bg_view style={{flex: 2, alignItems: 'center'}}>
+              <Bg_view
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  zIndex: -5,
+                }}>
                 <Icon
                   icon={require('../../android/app/src/main/assets/Icons/exchange_chat_icon.png')}
                   style={{marginHorizontal: wp(2.8)}}
@@ -561,7 +566,12 @@ class Offer extends React.Component {
                       )
                     ) : status === 'completed' ? null : null}
                     {status === 'declined' ? (
-                      <Text_btn text="Declined!" />
+                      <Bg_view
+                        style={{
+                          alignItems: 'center',
+                        }}>
+                        <Text_btn text="Declined!" />
+                      </Bg_view>
                     ) : null}
 
                     {status === 'pending' && user._id === seller._id ? (

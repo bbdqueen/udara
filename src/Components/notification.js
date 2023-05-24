@@ -1,4 +1,5 @@
 import React from 'react';
+import {Admin_id} from '../../Udara';
 import {hp, wp} from '../utils/dimensions';
 import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
@@ -38,6 +39,7 @@ class Notification extends React.Component {
         message={data.find(d => d && d._id && d._id.startsWith('message'))}
         navigation={navigation}
         user={user}
+        admin_in_dispute={user._id === Admin_id}
       />
     );
   };

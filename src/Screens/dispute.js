@@ -54,8 +54,6 @@ class Dispute extends React.Component {
     let {user, admin_in_dispute, onsale, offer} = route.params;
     let {dispute, refund_buyer} = this.state;
 
-    console.log(admin_in_dispute);
-
     return (
       <Bg_view flex>
         <Header title="dispute" navigation={navigation} />
