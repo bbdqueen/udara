@@ -6,25 +6,38 @@ import Icon from '../Components/Icon';
 import Otp_counter from '../Components/otp_counter';
 import Stretched_button from '../Components/Stretched_button';
 import {hp, wp} from '../utils/dimensions';
-import {email_regex} from '../utils/functions';
+import {email_regex, to_title} from '../utils/functions';
 import {post_request} from '../utils/services';
 import toast from '../utils/toast';
+import {emitter} from '../../Udara';
 
-class Verify_email extends React.Component {
+class Two_factor_auth_login extends React.Component {
   constructor(props) {
     super(props);
 
-    let {route} = this.props;
-    let {email} = route.params;
+    let {route, navigation} = this.props;
+    let {user, wallet} = route.params;
 
-    email = email || '';
+    if (!user) return navigation.goBack();
+    console.log(user);
 
-    this.state = {email, valid_code: email_regex.test(email)};
+    let email = user?.email;
+
+    this.state = {user, wallet, email, valid_code: email_regex.test(email)};
   }
 
   resend_otp = async () => {
-    let {email} = this.props.route.params;
-    return await post_request('request_otp', {email});
+    let {user} = this.props.route.params;
+    console.log(user, 'UHHHHHHHH');
+    let res = await post_request('request_otp', {
+      email: user.email,
+      relogin: true,
+    });
+
+    console.log(res);
+    if (res?.message) {
+      return toast(res.message);
+    }
   };
 
   set_code = code =>
@@ -34,21 +47,27 @@ class Verify_email extends React.Component {
     });
 
   verify = async () => {
-    let {navigation, route} = this.props;
-    let {email} = route.params;
-    let {code} = this.state;
+    let {route} = this.props;
+    let {user, wallet} = route.params;
+    let {code, email, loading} = this.state;
+    if (loading) return;
 
-    let res = await post_request('verify_email', {email, code: code.trim()});
+    this.setState({loading: true});
+
+    let res = await post_request('verify_email', {
+      email,
+      code: code.trim(),
+    });
 
     if (res?.user) {
-      navigation.navigate('reset_password', {email, user: res.user});
+      emitter.emit('logged_in', {user, wallet});
     } else toast(res?.message || 'Email verification failed');
   };
 
   render = () => {
     let {route} = this.props;
-    let {email} = route.params;
-    let {valid_code, loading, code} = this.state;
+    let {user} = route.params;
+    let {valid_code, loading, email, code} = this.state;
 
     return (
       <Bg_view flex>
@@ -61,7 +80,7 @@ class Verify_email extends React.Component {
               />
 
               <Fr_text bold="900" size={wp(7)} color="#28100B">
-                Verify Email
+                Welcome, {to_title(user.username)}
               </Fr_text>
               <Fr_text
                 size={wp(4.2)}
@@ -74,7 +93,7 @@ class Verify_email extends React.Component {
                   marginTop: hp(1.4),
                   marginBottom: hp(2.8),
                 }}>
-                {`enter the 6 digit number that was sent to ${email}`}
+                {`Authentication Code has been sent to ${email}`}
               </Fr_text>
               <Bg_view
                 style={{
@@ -123,7 +142,7 @@ class Verify_email extends React.Component {
                   ) : null}
                 </Bg_view>
                 <Stretched_button
-                  title="verify"
+                  title="Proceed"
                   disabled={!valid_code || !code}
                   loading={loading}
                   style={{marginHorizontal: 0, marginTop: hp(4)}}
@@ -140,4 +159,4 @@ class Verify_email extends React.Component {
   };
 }
 
-export default Verify_email;
+export default Two_factor_auth_login;

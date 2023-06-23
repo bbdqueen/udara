@@ -12,7 +12,7 @@ import Line from '../Components/line';
 import Small_btn from '../Components/small_button';
 import {hp, wp} from '../utils/dimensions';
 import Cool_modal from '../Components/cool_modal';
-import {Admin_id, emitter, User} from '../../Udara';
+import {emitter, User} from '../../Udara';
 import Amount_to_sell from '../Components/amount_to_sell';
 import Topup from '../Components/topup';
 import Withdraw from '../Components/withdraw';
@@ -83,14 +83,14 @@ class Wallet extends React.Component {
           </Fr_text>
           <Bg_view no_bg>
             <Fr_text
-              bold={this.user._id === Admin_id && profits && '600'}
+              bold={this.user.is_admin && profits && '600'}
               color="#fff"
               capitalise>
-              {this.user._id === Admin_id && profits
+              {this.user.is_admin && profits
                 ? 'Admin Balance: '
                 : this.user.username}
             </Fr_text>
-            {this.user._id === Admin_id && profits ? (
+            {this.user.is_admin && profits ? (
               <Fr_text
                 size={wp(5)}
                 color="#fff"
@@ -237,7 +237,7 @@ class Wallet extends React.Component {
                       horizontal
                       style={{
                         justifyContent: 'space-evenly',
-                        paddingTop: hp(user._id === Admin_id ? 1 : 2),
+                        paddingTop: hp(user.is_admin ? 1 : 2),
                       }}>
                       <TouchableWithoutFeedback onPress={this.topup}>
                         <View
@@ -254,7 +254,7 @@ class Wallet extends React.Component {
                         </View>
                       </TouchableWithoutFeedback>
 
-                      {user._id === Admin_id ? (
+                      {user.is_admin ? (
                         <TouchableWithoutFeedback onPress={this.paycheck}>
                           <View
                             style={{
@@ -354,7 +354,6 @@ class Wallet extends React.Component {
                   {refreshing_txs ? null : (
                     <Transactions
                       user={user}
-                      ref={transactions => (this.transactions = transactions)}
                       refresh={this.refresh_txs}
                       navigation={navigation}
                     />

@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {Admin_id, emitter} from '../../Udara';
+import {emitter} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Cool_modal from '../Components/cool_modal';
 import Currencies from '../Components/currencies';
@@ -280,9 +280,7 @@ class Sell extends React.Component {
             loading={loading}
           />
 
-          {value > 500 &&
-          user.status !== 'verified' &&
-          user._id !== Admin_id ? (
+          {value > 500 && user.status !== 'verified' && !user.is_admin ? (
             <Bg_view
               style={{
                 alignItems: 'center',

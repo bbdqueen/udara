@@ -146,8 +146,9 @@ class Account extends React.Component {
         value: alphabetic_naming[this.user.wallet.fav_currency],
         action: () => this.fav_currency_modal?.toggle_show_modal(),
       },
-      {title: 'ACCESS CONTROL', no_bg: true},
-      Admin_id === this.user._id
+      this.user.is_admin ? null : {title: 'ACCESS CONTROL', no_bg: true},
+      this.user.is_admin ? {title: 'Admin Settings', no_bg: true} : null,
+      this.user.is_admin
         ? {
             title: 'disputes',
             value: this.state.disputes || '',
@@ -155,10 +156,29 @@ class Account extends React.Component {
               this.props.navigation.navigate('disputes', {user: this.user}),
           }
         : null,
-      Admin_id === this.user._id
+
+      this.user.is_admin
         ? {
             title: 'verification requests',
             action: () => navigation.navigate('verification_requests'),
+          }
+        : null,
+      this.user.is_admin
+        ? {
+            title: 'platform report',
+            action: () => navigation.navigate('platform_reports'),
+          }
+        : null,
+      this.user._id === Admin_id
+        ? {
+            title: 'Create Admin',
+            action: () => navigation.navigate('create_admin'),
+          }
+        : null,
+      this.user._id === Admin_id
+        ? {
+            title: 'Manage Admins',
+            action: () => navigation.navigate('manage_admins'),
           }
         : null,
       {

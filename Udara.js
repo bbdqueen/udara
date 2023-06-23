@@ -52,6 +52,11 @@ import Reset_password from './src/Screens/reset_password';
 import Verify_email from './src/Screens/verify_email';
 import My_sales from './src/Screens/my_sales';
 import Relogin from './src/Screens/Relogin';
+import Two_factor_auth_login from './src/Screens/2fa_login';
+import Create_admin from './src/Screens/create_admin';
+import Manage_admins from './src/Screens/manage_admins';
+import Platform_reports from './src/Screens/platform_reports';
+import User_wallet from './src/Screens/user_wallet';
 
 const User = React.createContext();
 
@@ -64,6 +69,8 @@ const App_stack = createStackNavigator();
 const Bottom_tab = createBottomTabNavigator();
 
 const Admin_id = 'users~platform_user~3000';
+
+let Is_admin;
 
 let sock;
 
@@ -102,6 +109,7 @@ class App_entry extends React.Component {
         <Auth_stack.Screen name="login_et_signup" component={Login_et_signup} />
         <Auth_stack.Screen name="signup" component={Signup} />
         <Auth_stack.Screen name="relogin" component={Relogin} />
+        <Auth_stack.Screen name="2fa_login" component={Two_factor_auth_login} />
         <Auth_stack.Screen name="registration" component={Registration} />
         <Auth_stack.Screen name="verification" component={Verification} />
         <Auth_stack.Screen name="login" component={Login} />
@@ -170,6 +178,7 @@ class Index extends React.Component {
             tabBarLabel: 'Home',
             tabBarIcon: ({color, size}) => (
               <Icon
+                color={color}
                 icon="home_icon.png"
                 style={{height: wp(7), width: wp(7)}}
               />
@@ -259,8 +268,15 @@ class App_stack_entry extends React.Component {
         <App_stack.Screen name="change_password" component={Change_password} />
         <App_stack.Screen name="update_phone" component={Update_phone} />
         <App_stack.Screen name="update_email" component={Update_email} />
+        <App_stack.Screen name="user_wallet" component={User_wallet} />
         <App_stack.Screen name="sell" component={Sell} />
         <App_stack.Screen name="my_sales" component={My_sales} />
+        <App_stack.Screen name="create_admin" component={Create_admin} />
+        <App_stack.Screen
+          name="platform_reports"
+          component={Platform_reports}
+        />
+        <App_stack.Screen name="manage_admins" component={Manage_admins} />
         <App_stack.Screen name="onsale_details" component={Onsale_details} />
         <App_stack.Screen name="offers" component={Offers} />
         <App_stack.Screen name="submit_dispute" component={Submit_dispute} />
@@ -325,6 +341,12 @@ class Udara extends React.Component {
 
     sock.on('new_message', message => emitter.emit('new_message', message));
 
+    sock.on('new_notification', notifications =>
+      notifications.map(notification =>
+        emitter.emit('new_notification', notification),
+      ),
+    );
+
     sock.on('offer_status', payload =>
       emitter.emit('offer_status_update', payload),
     );
@@ -355,6 +377,7 @@ class Udara extends React.Component {
     } else {
       let result = await get_request(`user_refresh/${user}`);
       if (result) {
+        Is_admin = result?.user?.is_admin ? result.user._id : null;
         this.setState({
           user: result.user,
           wallet: result.wallet,
@@ -381,6 +404,7 @@ class Udara extends React.Component {
       this.setState({user: {...this.state.user, status: 'pending'}});
 
     this.logged_in = async ({user, wallet}) => {
+      Is_admin = user.is_admin ? user._id : null;
       this.setState({
         logged: true,
         user,
@@ -613,4 +637,4 @@ class Udara extends React.Component {
 }
 
 export default Udara;
-export {emitter, User, Admin_id, Sock_offer_status, sock};
+export {emitter, User, Admin_id, Sock_offer_status, Is_admin, sock};

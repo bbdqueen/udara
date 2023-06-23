@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {Admin_id, emitter, Sock_offer_status, User} from '../../Udara';
+import {emitter, Sock_offer_status, User} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Fr_text from '../Components/Fr_text';
 import Header from '../Components/header';
@@ -51,7 +51,7 @@ class Chat extends React.Component {
     let chat = await post_request('chat', {
         onsale: onsale._id,
         offer: offer._id,
-        user: this.loggeduser._id === Admin_id ? user : this.loggeduser._id,
+        user: this.loggeduser.is_admin ? user : this.loggeduser._id,
       }),
       messages;
 
@@ -238,8 +238,7 @@ class Chat extends React.Component {
     if (file_base64) attachment = new Array(file_base64);
 
     if (!chat) {
-      this.other_person =
-        this.loggeduser._id !== Admin_id ? Admin_id : this.loggeduser._id;
+      this.other_person = this.loggeduser._id;
 
       chat = {
         offer: offer._id,
@@ -383,7 +382,7 @@ class Chat extends React.Component {
     navigation.navigate('dispute', {
       offer,
       onsale,
-      admin_in_dispute: this.loggeduser._id === Admin_id,
+      admin_in_dispute: this.loggeduser.is_admin,
       user: this.loggeduser,
     });
   };
@@ -419,11 +418,11 @@ class Chat extends React.Component {
     let is_seller_chat;
 
     is_seller_chat =
-      this.loggeduser._id !== Admin_id ||
+      !this.loggeduser.is_admin ||
       (chat && chat.to === seller._id) ||
       (chat && chat.from === seller._id);
 
-    let can_switch = this.loggeduser._id === Admin_id;
+    let can_switch = this.loggeduser.is_admin;
 
     return (
       <Bg_view
@@ -849,7 +848,7 @@ class Chat extends React.Component {
                       }}>
                       <TextInput
                         placeholder={
-                          this.loggeduser._id === Admin_id
+                          this.loggeduser.is_admin
                             ? 'Type your message'
                             : 'Message admin for help.'
                         }

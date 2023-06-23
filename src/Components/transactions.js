@@ -11,6 +11,8 @@ import Loadindicator from './load_indicator';
 import Search_input from './search_input';
 import Text_btn from './Text_btn';
 import Transaction from './transaction';
+import Cool_modal from './cool_modal';
+import Print_transactions from './print_transactions';
 
 const filter = (item, search_value) => {
   if (!search_value) return true;
@@ -62,7 +64,7 @@ class Transactions extends React.Component {
     transactions = transactions.sort((t1, t2) => t1.created < t2.created);
     this.setState({
       transactions: {...transactions_, [active_currency]: transactions},
-      [`has_no_more_${active_currency}`]: !txs.length,
+      [`has_no_more_${active_currency}`]: txs.length < 10,
       refreshing: false,
       empty_msg: '',
       mounts: {...this.state.mounts, [active_currency]: mount},
@@ -102,8 +104,10 @@ class Transactions extends React.Component {
 
   refresh = async () => await this.fetch_transactions(true);
 
+  toggle_print_transactions = () => this.print?.toggle_show_modal();
+
   render() {
-    let {user, active_currency} = this.props;
+    let {user, active_currency, user_wallet} = this.props;
 
     let {conversion_rates} = user.wallet;
     let {
@@ -133,6 +137,12 @@ class Transactions extends React.Component {
             transaction history
           </Fr_text>
           <Bg_view horizontal style={{alignItems: 'center'}}>
+            {user_wallet ? (
+              <Icon
+                icon={require('../../android/app/src/main/assets/Icons/print.png')}
+                action={() => this.toggle_print_transactions()}
+              />
+            ) : null}
             <Icon
               icon="refresh.png"
               action={() => this.fetch_transactions(true)}
@@ -182,18 +192,28 @@ class Transactions extends React.Component {
           {refreshing ? (
             <Loadindicator />
           ) : has_no_more ? null : (
-            <Text_btn
-              text={empty_msg ? 'try again' : 'load more'}
-              action={this.refresh}
-              disabled={has_no_more}
-              bold
-              capitalise
-              italic
-              size={wp(4)}
-              style={{alignItems: 'center', paddingVertical: hp(1.4)}}
-            />
+            <Bg_view style={{alignItems: 'center'}}>
+              <Text_btn
+                accent
+                text={empty_msg ? 'try again' : 'load more'}
+                action={this.refresh}
+                disabled={has_no_more}
+                bold
+                capitalise
+                italic
+                size={wp(4)}
+                style={{alignItems: 'center', paddingVertical: hp(1.4)}}
+              />
+            </Bg_view>
           )}
         </Bg_view>
+
+        <Cool_modal ref={print => (this.print = print)}>
+          <Print_transactions
+            user={user}
+            toggle={this.toggle_print_transactions}
+          />
+        </Cool_modal>
       </Bg_view>
     );
   }

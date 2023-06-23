@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {Admin_id, emitter, User} from '../../Udara';
+import {emitter, User} from '../../Udara';
 import Amount_to_sell from '../Components/amount_to_sell';
 import Bg_view from '../Components/Bg_view';
 import Buy from '../Components/buy';
@@ -15,11 +15,14 @@ import Icon from '../Components/Icon';
 import Listfooter from '../Components/listfooter';
 import Loadindicator from '../Components/load_indicator';
 import Notification from '../Components/notification';
-import Payment from '../Components/payment';
 import Quick_action from '../Components/quick_action';
 import {hp, wp} from '../utils/dimensions';
 import {commalise_figures} from '../utils/functions';
 import {post_request} from '../utils/services';
+import Ongoing_transactions from '../Components/ongoing_transactions';
+import Text_btn from '../Components/Text_btn';
+import Line from '../Components/line';
+import Wallet from '../Components/wallet';
 
 class Home extends React.Component {
   constructor(props) {
@@ -115,8 +118,7 @@ class Home extends React.Component {
         {user => {
           this.user = user;
 
-          let {wallet, username, _id} = user;
-          let {fav_currency, profits} = wallet;
+          let {wallet, username} = user;
 
           return (
             <Bg_view flex>
@@ -152,7 +154,7 @@ class Home extends React.Component {
                       <View style={{width: wp(5)}} />
                     )}
 
-                    {user._id === Admin_id ? (
+                    {user.is_admin ? (
                       <Icon
                         icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
                         action={() => navigation.navigate('admin_messages')}
@@ -164,87 +166,8 @@ class Home extends React.Component {
                       action={() => emitter.emit('refresh_wallet')}
                     />
                   </Bg_view>
-                  <TouchableWithoutFeedback
-                    onPress={() =>
-                      navigation.navigate('wallet', {currency: 'naira'})
-                    }>
-                    <View>
-                      <Bg_view
-                        style={{
-                          height: wp(52.5),
-                          backgroundColor: '#28100B',
-                          marginHorizontal: wp(5.6),
-                          borderRadius: wp(5.6),
-                        }}>
-                        <Bg_view
-                          style={{
-                            justifyContent: 'space-between',
-                            padding: wp(4),
-                          }}
-                          horizontal
-                          no_bg>
-                          <Bg_view no_bg>
-                            <Fr_text color="#fff">Udara Wallet</Fr_text>
-                            <Fr_text
-                              color="#fff"
-                              style={{marginTop: hp(2.8)}}
-                              size={wp(4)}
-                              bold="600">
-                              Total balance
-                            </Fr_text>
-                            <Fr_text color="#fff" bold="900" size={wp(6.5)}>
-                              {`${
-                                wallet.naira
-                                  ? commalise_figures(
-                                      Number(wallet.naira).toFixed(2),
-                                    )
-                                  : '0.00'
-                              } NGN`}
-                            </Fr_text>
-                            <Bg_view no_bg>
-                              <Fr_text
-                                bold={_id === Admin_id && profits && '600'}
-                                color="#fff"
-                                capitalise>
-                                {_id === Admin_id && profits
-                                  ? 'admin balance'
-                                  : username}
-                              </Fr_text>
-                              {_id === Admin_id && profits ? (
-                                <Fr_text bold size={wp(5)} color="#fff">
-                                  {`${profits} NGN`}
-                                </Fr_text>
-                              ) : null}
-                            </Bg_view>
-                          </Bg_view>
-                          <Icon
-                            style={{
-                              marginTop: hp(5.6),
-                              height: wp(20),
-                              width: wp(15),
-                              borderRadius: wp(2.8),
-                            }}
-                            icon={
-                              fav_currency === 'naira'
-                                ? 'naira_home_page.png'
-                                : `${fav_currency}_icon.png`
-                            }
-                          />
-                        </Bg_view>
-                        <Bg_view no_bg style={{alignSelf: 'flex-end'}}>
-                          <Icon
-                            style={{
-                              marginRight: wp(5),
-                              marginTop: hp(0.2),
-                              height: hp(7),
-                              width: wp(50),
-                            }}
-                            icon={require('../../android/app/src/main/assets/Icons/master_card_circles.png')}
-                          />
-                        </Bg_view>
-                      </Bg_view>
-                    </View>
-                  </TouchableWithoutFeedback>
+
+                  <Wallet wallet={wallet} user={user} navigation={navigation} />
 
                   <Bg_view>
                     <Fr_text
@@ -306,16 +229,30 @@ class Home extends React.Component {
                     </ScrollView>
                   </Bg_view>
 
-                  <Bg_view style={{paddingHorizontal: wp(5.6)}}>
-                    <Bg_view no_bg style={{marginTop: hp(1)}}>
-                      <Fr_text accent bold size={wp(5.6)}>
-                        Payments
-                      </Fr_text>
-                      <Bg_view no_bg style={{padding: wp(2.8)}}>
-                        {this.payments.map(payment => (
-                          <Payment payment={payment} key={payment.title} />
-                        ))}
-                      </Bg_view>
+                  <Bg_view style={{}}>
+                    <Line />
+                    <Bg_view no_bg style={{marginTop: hp(2)}}>
+                      <Ongoing_transactions
+                        header={
+                          <Bg_view
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}>
+                            <Fr_text size={wp(4)} style={{marginLeft: wp(4)}}>
+                              Ongoing Transactions
+                            </Fr_text>
+                            <Text_btn
+                              text="See all"
+                              accent
+                              style={{paddingRight: wp(4)}}
+                              action={() => navigation.navigate('buyer_offers')}
+                            />
+                          </Bg_view>
+                        }
+                        user={user}
+                        navigation={navigation}
+                      />
                     </Bg_view>
                   </Bg_view>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Admin_id, emitter} from '../../Udara';
+import {emitter} from '../../Udara';
 import {hp, wp} from '../utils/dimensions';
 import {commalise_figures} from '../utils/functions';
 import {domain, post_request} from '../utils/services';
@@ -226,7 +226,7 @@ class Onsale_currency extends React.Component {
                 }}>
                 {in_send_offer ? null : user.status !== 'verified' &&
                   value > 500 &&
-                  user._id !== Admin_id ? (
+                  !user.is_admin ? (
                   <Text_btn
                     bold
                     italic

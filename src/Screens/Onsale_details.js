@@ -1,6 +1,5 @@
 import React from 'react';
 import {FlatList, ScrollView, TextInput, View} from 'react-native';
-import {Admin_id} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Cool_modal from '../Components/cool_modal';
 import Fr_text from '../Components/Fr_text';
@@ -269,7 +268,7 @@ class Onsale_details extends React.Component {
                   <Fr_text size={wp(3.5)} italic>
                     {seller.email}
                   </Fr_text>
-                  {user._id === Admin_id ? (
+                  {user.is_admin ? (
                     <Fr_text size={wp(3.5)} italic>
                       {seller.phone}
                     </Fr_text>

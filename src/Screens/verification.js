@@ -80,7 +80,7 @@ class Verification extends React.Component {
         country_code,
       });
     } else {
-      toast('Verification  failed');
+      toast('Verification failed');
       navigation.goBack();
     }
   };

@@ -82,7 +82,7 @@ class Login extends React.Component {
 
   login = async () => {
     this.setState({loading: true});
-    let {route} = this.props;
+    let {route, navigation} = this.props;
     let {email, user, new_user, password} = this.state;
 
     user = user || route?.params?.user;
@@ -97,12 +97,13 @@ class Login extends React.Component {
 
     let result = await post_request('logging_in', {email, key: password});
 
-    console.log(result);
-
     await AsyncStorage.removeItem('new_user');
     this.setState({loading: false});
     result && result.user
-      ? emitter.emit('logged_in', {user: result.user, wallet: result.wallet})
+      ? navigation.navigate('2fa_login', {
+          user: result.user,
+          wallet: result.wallet,
+        })
       : toast(result || 'Cannot login at the moment.');
   };
 

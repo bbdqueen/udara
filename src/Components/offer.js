@@ -9,7 +9,7 @@ import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
 import Icon from './Icon';
 import Small_btn from './small_button';
-import {Admin_id, emitter, Sock_offer_status} from './../../Udara';
+import {emitter, Is_admin, Sock_offer_status} from './../../Udara';
 import {post_request} from '../utils/services';
 import Text_btn from './Text_btn';
 import Cool_modal from './cool_modal';
@@ -205,7 +205,7 @@ class Offer extends React.Component {
 
     let params = {onsale, offer};
     if (message)
-      params.user = message.to === Admin_id ? message.from : message.to;
+      params.user = message.to === Is_admin ? message.from : message.to;
 
     navigation.navigate('chat', params);
   };
@@ -242,10 +242,11 @@ class Offer extends React.Component {
       message,
       navigation,
       full_width,
+      style,
     } = this.props;
     if (!offer) return null;
 
-    let {flag, seller, currency, alphabetic_name} = onsale;
+    let {flag, seller, alphabetic_name} = onsale;
     let {amount, status, offer_need, offer_rate} = offer;
     if (status_) status = status_;
     new_messages = new_messages || '';
@@ -270,6 +271,7 @@ class Offer extends React.Component {
               borderRadius: wp(4),
               width: full_width ? null : wp(80),
               maxWidth: full_width ? wp() : null,
+              ...style,
             }}>
             <Bg_view horizontal style={{justifyContent: 'space-between'}}>
               <Bg_view style={{flex: 4, flexDirection: 'row'}}>
@@ -494,11 +496,7 @@ class Offer extends React.Component {
                             icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
                             action={this.go_to_chat}
                             size={wp(3.5)}
-                            text={
-                              user._id === Admin_id
-                                ? 'Respond'
-                                : `Contact Admin`
-                            }
+                            text={user.is_admin ? 'Respond' : `Contact Admin`}
                             accent
                           />
                         </Bg_view>
@@ -606,9 +604,7 @@ class Offer extends React.Component {
                           size={wp(3.5)}
                           accent
                           style={{fontSize: wp(4)}}
-                          text={
-                            user._id === Admin_id ? 'Respond' : `Contact Admin`
-                          }
+                          text={user.is_admin ? 'Respond' : `Contact Admin`}
                         />
                       </Bg_view>
                     ) : null}

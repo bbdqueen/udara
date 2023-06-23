@@ -27,7 +27,11 @@ class Relogin extends React.Component {
     let {password} = this.state;
     let email = this.email;
 
-    let result = await post_request('logging_in', {email, key: password});
+    let result = await post_request('logging_in', {
+      email,
+      key: password,
+      relogin: true,
+    });
 
     this.setState({loading: false});
     result && result.user
