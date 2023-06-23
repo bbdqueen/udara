@@ -211,6 +211,7 @@ class Transactions extends React.Component {
         <Cool_modal ref={print => (this.print = print)}>
           <Print_transactions
             user={user}
+            admin={user_wallet}
             toggle={this.toggle_print_transactions}
           />
         </Cool_modal>

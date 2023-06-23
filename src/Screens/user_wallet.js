@@ -58,7 +58,7 @@ class User_wallet extends React.Component {
                 {refreshing_txs || !wallet ? null : (
                   <Transactions
                     user={{...user, wallet}}
-                    user_wallet
+                    user_wallet={loggeduser}
                     ref={transactions => (this.transactions = transactions)}
                     refresh={this.refresh_txs}
                     navigation={navigation}

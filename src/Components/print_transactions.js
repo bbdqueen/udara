@@ -17,7 +17,7 @@ class Print_transactions extends React.Component {
   }
 
   proceed = async () => {
-    let {user, toggle} = this.props;
+    let {user, admin, toggle} = this.props;
     let {loading, start_date, end_date} = this.state;
 
     if (loading) return;
@@ -27,6 +27,7 @@ class Print_transactions extends React.Component {
       start_date: start_date.getTime(),
       end_date: end_date.getTime(),
       user: user._id,
+      admin: admin.email,
       wallet: user.wallet._id,
     });
 
