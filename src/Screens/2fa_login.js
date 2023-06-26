@@ -19,7 +19,6 @@ class Two_factor_auth_login extends React.Component {
     let {user, wallet} = route.params;
 
     if (!user) return navigation.goBack();
-    console.log(user);
 
     let email = user?.email;
 
@@ -28,13 +27,11 @@ class Two_factor_auth_login extends React.Component {
 
   resend_otp = async () => {
     let {user} = this.props.route.params;
-    console.log(user, 'UHHHHHHHH');
     let res = await post_request('request_otp', {
       email: user.email,
       relogin: true,
     });
 
-    console.log(res);
     if (res?.message) {
       return toast(res.message);
     }
@@ -50,6 +47,7 @@ class Two_factor_auth_login extends React.Component {
     let {route} = this.props;
     let {user, wallet} = route.params;
     let {code, email, loading} = this.state;
+
     if (loading) return;
 
     this.setState({loading: true});
@@ -91,9 +89,11 @@ class Two_factor_auth_login extends React.Component {
                 style={{
                   marginHorizontal: wp(20),
                   marginTop: hp(1.4),
-                  marginBottom: hp(2.8),
                 }}>
-                {`Authentication Code has been sent to ${email}`}
+                {`Authentication Code has been sent to`}
+              </Fr_text>
+              <Fr_text centralise style={{marginBottom: hp(2.8)}} accent>
+                {email}
               </Fr_text>
               <Bg_view
                 style={{

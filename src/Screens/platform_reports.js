@@ -70,7 +70,7 @@ class Platform_reports extends React.Component {
           <Stretched_button
             title="Search"
             loading={fetching}
-            disabled={!email_regex.test(email)}
+            disabled={!email_regex.test(email?.trim())}
             action={this.find_user}
           />
 

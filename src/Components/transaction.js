@@ -23,23 +23,41 @@ class Transaction extends React.Component {
   }
 
   componentDidMount = () => {
-    emitter.emit('transaction_mounted', this.props.transaction._id);
+    let {_id} = this.props.transaction;
+    this.close_data = tx =>
+      tx !== _id &&
+      this.state.show_data &&
+      this.setState({show_data: false, fetching: false});
+
+    emitter.listen('close_data', this.close_data);
+    emitter.emit('transaction_mounted', _id);
+  };
+
+  componentWillUnmount = () => {
+    emitter.remove_listener('close_data', this.close_data);
   };
 
   toggle_data = async () => {
     let {fetched_data, show_data} = this.state;
     if (show_data) return this.setState({show_data: false});
 
-    let {data} = this.props.transaction;
-    if (!fetched_data)
+    let {data, _id} = this.props.transaction;
+
+    if (!fetched_data) {
+      this.setState({fetching: true});
+
       fetched_data = await post_request('transaction_offer', data);
+    }
+
     fetched_data &&
       fetched_data.offer &&
-      this.setState({fetched_data, show_data: true});
+      this.setState({fetched_data, fetching: false, show_data: true}, () =>
+        emitter.emit('close_data', _id),
+      );
   };
 
   render = () => {
-    let {fetched_data, show_data} = this.state;
+    let {fetched_data, show_data, fetching} = this.state;
     let {transaction, navigation, user} = this.props;
     let {
       from_currency,
@@ -100,11 +118,14 @@ class Transaction extends React.Component {
             </Bg_view>
           </View>
         </TouchableNativeFeedback>
-        {data && show_data ? (
+        {fetching ? (
+          <Loadindicator />
+        ) : data && show_data ? (
           <Bg_view>
             <Line />
             {fetched_data ? (
               <Offer
+                transactions
                 user={user}
                 offer={fetched_data.offer}
                 onsale={fetched_data.onsale}

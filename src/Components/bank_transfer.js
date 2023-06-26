@@ -13,6 +13,8 @@ class Bank_transfer extends React.Component {
 
   render() {
     let {bank_transfer, is_seller} = this.props;
+    if (!bank_transfer) return null;
+
     let {need, bank_name, account_number} = bank_transfer;
 
     return (

@@ -74,6 +74,7 @@ class Onsale_details extends React.Component {
     };
     let res = await post_request('make_offer', offer);
     res.offer_need = offer_need;
+
     if (res) {
       let {my_offers} = this.state;
       my_offers = new Array(res, ...my_offers);

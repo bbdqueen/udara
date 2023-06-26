@@ -7,6 +7,8 @@ import Fr_text from './Fr_text';
 import Line from './line';
 import Loadindicator from './load_indicator';
 import Text_btn from './Text_btn';
+import Cool_modal from './cool_modal';
+import Image_preview from './image_preview';
 
 class Verification_request extends React.Component {
   constructor(props) {
@@ -22,11 +24,12 @@ class Verification_request extends React.Component {
 
     this.setState({loading: true});
 
-    let response = await post_request(`verify_account/${request._id}`);
-    console.log(response);
+    await post_request(`verify_account/${request._id}`);
 
     this.setState({verified: true, loading: false});
   };
+
+  toggle_image_preview = () => this.preview?.toggle_show_modal();
 
   render() {
     let {loading, verified} = this.state;
@@ -74,6 +77,15 @@ class Verification_request extends React.Component {
             <Text_btn bold centralise text="Verify" action={this.verify} />
           )}
         </Bg_view>
+
+        <Cool_modal
+          flex
+          height={hp()}
+          ref={preview => (this.preview = preview)}>
+          <Bg_view flex>
+            <Image_preview image={id} toggle={this.toggle_image_preview} />
+          </Bg_view>
+        </Cool_modal>
       </Bg_view>
     );
   }

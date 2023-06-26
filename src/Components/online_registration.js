@@ -12,6 +12,8 @@ class Online_registration extends React.Component {
 
   render() {
     let {is_seller, reg} = this.props;
+    if (!reg) return null;
+
     let {need, url, site_details} = reg;
 
     return (

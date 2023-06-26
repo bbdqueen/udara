@@ -95,16 +95,24 @@ class Login extends React.Component {
         user,
       }));
 
-    let result = await post_request('logging_in', {email, key: password});
+    let result = await post_request('logging_in', {
+      email,
+      key: password,
+      new_user: !!new_user,
+    });
 
     await AsyncStorage.removeItem('new_user');
     this.setState({loading: false});
-    result && result.user
-      ? navigation.navigate('2fa_login', {
+
+    if (result?.user) {
+      if (new_user) {
+        emitter.emit('logged_in', {user: result.user, wallet: result.wallet});
+      } else
+        navigation.navigate('2fa_login', {
           user: result.user,
           wallet: result.wallet,
-        })
-      : toast(result || 'Cannot login at the moment.');
+        });
+    } else toast(result?.message || result || 'Cannot login at the moment.');
   };
 
   render = () => {
@@ -145,7 +153,7 @@ class Login extends React.Component {
                   value={email}
                   placeholder="type your email"
                   label="email Address"
-                  type="email-pad"
+                  type="email-address"
                   on_change_text={this.set_email}
                   disabled={!!new_user}
                   left_icon={

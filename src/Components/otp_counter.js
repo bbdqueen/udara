@@ -11,10 +11,12 @@ class Otp_counter extends React.Component {
     this.state = new Object();
   }
 
+  timeframe = 60 * 5;
+
   componentDidMount = () => {
     let {counter} = this.props;
 
-    this.setState({counter: counter || 60});
+    this.setState({counter: counter || this.timeframe});
     this.run_counter();
   };
 
@@ -33,8 +35,15 @@ class Otp_counter extends React.Component {
   };
 
   restart_counter = () => {
-    this.setState({counter: 60});
+    this.setState({counter: this.timeframe});
     this.run_counter();
+  };
+
+  parse_timer = counter => {
+    let m = String(Math.floor(counter / 60)).padStart(2, '0');
+    let s = String(counter % 60).padStart(2, '0');
+
+    return `${m}:${s}`;
   };
 
   render = () => {
@@ -46,9 +55,9 @@ class Otp_counter extends React.Component {
         {counter ? (
           <Fr_text size={wp(4)} opacity={0.8}>
             {`Resend Code in ${
-              counter === 60
-                ? '1:00s'
-                : `0:${counter.toString().padStart(2, '0')}s`
+              counter === this.timeframe
+                ? '5:00s'
+                : `${this.parse_timer(counter)}s`
             }`}
           </Fr_text>
         ) : (

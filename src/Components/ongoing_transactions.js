@@ -22,7 +22,9 @@ class Ongoing_transactions extends React.Component {
       buyer: user._id,
     });
 
-    offers = offers.filter(offer => typeof offer.offer === 'object');
+    if (offers?.filter)
+      offers = offers.filter(offer => typeof offer.offer === 'object');
+    else offers = new Array();
 
     this.setState({offers});
   };

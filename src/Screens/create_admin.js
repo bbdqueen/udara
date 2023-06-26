@@ -59,15 +59,18 @@ class Create_admin extends React.Component {
       phone,
     });
 
-    res?.admin && emitter.emit('new_admin', res.admin);
+    if (res?.admin) {
+      emitter.emit('new_admin', res.admin);
 
-    toast('Admin Created');
-    navigation.goBack();
+      toast('Admin Created');
+      navigation.goBack();
+    } else this.setState({loading: false, message: res?.message});
   };
 
   render() {
     let {navigation} = this.props;
-    let {email, password, username, reveal_passwords, phone} = this.state;
+    let {email, password, username, message, reveal_passwords, phone} =
+      this.state;
 
     return (
       <Bg_view flex>
@@ -77,23 +80,23 @@ class Create_admin extends React.Component {
           <Bg_view style={{marginHorizontal: wp(2.8)}}>
             {this.input_component({
               label: 'Username',
-              text_entry: username => this.setState({username}),
+              text_entry: username => this.setState({username, message: ''}),
               placeholder: 'Enter username',
             })}
             {this.input_component({
               label: 'Email',
-              text_entry: email => this.setState({email}),
+              text_entry: email => this.setState({email, message: ''}),
               placeholder: 'Enter email',
             })}
             {this.input_component({
               label: 'Phone',
-              text_entry: phone => this.setState({phone}),
+              text_entry: phone => this.setState({phone, message: ''}),
               placeholder: 'Enter phone',
             })}
 
             {this.input_component({
               label: 'Password',
-              text_entry: password => this.setState({password}),
+              text_entry: password => this.setState({password, message: ''}),
               placeholder: 'Enter password',
               secure: true,
             })}
@@ -106,6 +109,8 @@ class Create_admin extends React.Component {
                 this.setState({reveal_passwords: !this.state.reveal_passwords})
               }
             />
+
+            {message ? <Text_btn text={message} bold accent /> : null}
 
             <Stretched_button
               title="Add Admin"

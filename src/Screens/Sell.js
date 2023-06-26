@@ -70,40 +70,41 @@ class Sell extends React.Component {
   place_sale = async () => {
     if (this.state.loading) return;
 
-    this.setState({loading: true});
-    let {navigation, route} = this.props;
-    let {wallet} = route.params;
-    let {
-      rate,
-      value,
-      currency,
-      minimum_sell_value,
-      currency_full,
-      offer_terms,
-    } = this.state;
+    this.setState({loading: true}, async () => {
+      let {navigation, route} = this.props;
+      let {wallet} = route.params;
+      let {
+        rate,
+        value,
+        currency,
+        minimum_sell_value,
+        currency_full,
+        offer_terms,
+      } = this.state;
 
-    let sale = {
-      rate: Number(rate),
-      value: Number(value),
-      currency: currency || 'dollar',
-      offer_terms,
-      seller: wallet.user,
-      wallet: wallet._id,
-      alphabetic_name: currency_full.alphabetic_name,
-      icon: currency_full.icon,
-      flag: currency_full.flag,
-      minimum_sell_value: Number(minimum_sell_value) || 0,
-    };
+      let sale = {
+        rate: Number(rate),
+        value: Number(value),
+        currency: currency || 'dollar',
+        offer_terms,
+        seller: wallet.user,
+        wallet: wallet._id,
+        alphabetic_name: currency_full.alphabetic_name,
+        icon: currency_full.icon,
+        flag: currency_full.flag,
+        minimum_sell_value: Number(minimum_sell_value) || 0,
+      };
 
-    let res = await post_request('/place_sale', sale);
-    if (res) {
-      sale._id = res._id;
-      sale.created = res.created;
+      let res = await post_request('/place_sale', sale);
+      if (res) {
+        sale._id = res._id;
+        sale.created = res.created;
 
-      emitter.emit('new_currency_onsale', sale);
-      navigation.goBack();
-    } else toast("Couldn't place sale at this time");
-    this.setState({loading: false});
+        emitter.emit('new_currency_onsale', sale);
+        navigation.navigate('my_sales');
+      } else toast("Couldn't place sale at this time");
+      this.setState({loading: false});
+    });
   };
 
   render() {

@@ -107,7 +107,7 @@ class Transactions extends React.Component {
   toggle_print_transactions = () => this.print?.toggle_show_modal();
 
   render() {
-    let {user, active_currency, user_wallet} = this.props;
+    let {user, active_currency, navigation, user_wallet} = this.props;
 
     let {conversion_rates} = user.wallet;
     let {
@@ -175,6 +175,7 @@ class Transactions extends React.Component {
               renderItem={({item}) => (
                 <Transaction
                   transaction={item}
+                  navigation={navigation}
                   user={user}
                   conversion_rates={conversion_rates}
                 />

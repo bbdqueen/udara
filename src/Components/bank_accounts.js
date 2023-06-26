@@ -125,6 +125,7 @@ class Bank_accounts extends React.Component {
             <Bg_view flex style={{alignItems: 'center'}}>
               <Text_btn
                 centralise
+                accent
                 text="Add"
                 action={() => this.toggle_new_bank_account?.toggle_show_modal()}
               />

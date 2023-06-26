@@ -32,7 +32,7 @@ class Offer extends React.Component {
 
     let {offer, user} = this.props,
       new_messages =
-        (offer?.user._id === user._id
+        (offer?.user?._id === user?._id
           ? offer?.buyer_new_messages
           : offer?.seller_new_messages) || 0;
 
@@ -222,6 +222,12 @@ class Offer extends React.Component {
 
   aday = 60 * 60 * 24 * 1000;
 
+  open_wallet = user => {
+    let {navigation} = this.props;
+
+    navigation.navigate('user_wallet', {user});
+  };
+
   render = () => {
     let {
       status: status_,
@@ -240,14 +246,17 @@ class Offer extends React.Component {
       status: status__,
       admin_in_dispute,
       message,
+      transactions,
       navigation,
       full_width,
       style,
     } = this.props;
     if (!offer) return null;
+    else if (typeof offer === 'string') return null;
 
     let {flag, seller, alphabetic_name} = onsale;
     let {amount, status, offer_need, offer_rate} = offer;
+
     if (status_) status = status_;
     new_messages = new_messages || '';
 
@@ -260,180 +269,294 @@ class Offer extends React.Component {
     let status_info = status__ || status || 'pending';
 
     return (
-      <TouchableWithoutFeedback onPress={this.toggle_offer_buttons}>
-        <View>
-          <Bg_view
-            shadowed
-            style={{
-              padding: wp(2.8),
-              margin: wp(2.8),
-              marginTop: wp(1.4),
-              borderRadius: wp(4),
-              width: full_width ? null : wp(80),
-              maxWidth: full_width ? wp() : null,
-              ...style,
-            }}>
-            <Bg_view horizontal style={{justifyContent: 'space-between'}}>
-              <Bg_view style={{flex: 4, flexDirection: 'row'}}>
-                <Icon icon={flag} style={{height: wp(10), width: wp(10)}} />
-                <Bg_view flex style={{marginLeft: wp(1.4)}}>
-                  <Fr_text bold size={wp(4.5)}>
-                    {`${commalise_figures(amount)} ${alphabetic_name}`}
-                  </Fr_text>
-                  <Fr_text size={wp(3.5)}>{`x ${commalise_figures(
-                    offer_rate,
-                  )}`}</Fr_text>
-                </Bg_view>
-              </Bg_view>
-              <Bg_view
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  zIndex: -5,
-                }}>
-                <Icon
-                  icon={require('../../android/app/src/main/assets/Icons/exchange_chat_icon.png')}
-                  style={{marginHorizontal: wp(2.8)}}
-                />
-              </Bg_view>
-              <Bg_view style={{flex: 4, alignItems: 'flex-end'}}>
-                <Bg_view style={{alignItems: 'flex-end', flexWrap: 'wrap'}}>
+      <View>
+        {transactions && user.is_admin ? (
+          <Bg_view>
+            <Bg_view>
+              <Fr_text>Seller:</Fr_text>
+              <Text_btn
+                accent
+                text={onsale?.seller?.email}
+                action={() => this.open_wallet(onsale.seller)}
+              />
+            </Bg_view>
+            <Bg_view>
+              <Fr_text>Buyer:</Fr_text>
+              <Text_btn
+                accent
+                text={offer?.user?.email}
+                action={() => this.open_wallet(offer?.user)}
+              />
+            </Bg_view>
+          </Bg_view>
+        ) : null}
+
+        <TouchableWithoutFeedback onPress={this.toggle_offer_buttons}>
+          <View>
+            <Bg_view
+              shadowed
+              style={{
+                padding: wp(2.8),
+                margin: wp(2.8),
+                marginTop: wp(1.4),
+                borderRadius: wp(4),
+                width: full_width ? null : wp(80),
+                maxWidth: full_width ? wp() : null,
+                ...style,
+              }}>
+              <Bg_view horizontal style={{justifyContent: 'space-between'}}>
+                <Bg_view style={{flex: 4}}>
                   <TouchableNativeFeedback
-                    onPress={() => this.toggle_status_info()}>
-                    <View>
-                      <Bg_view
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Icon
-                          icon={require('../../android/app/src/main/assets/Icons/info.png')}
-                        />
-                        <Fr_text
-                          style={{marginLeft: 2.5}}
-                          capitalise
-                          italic
-                          size={wp(3.5)}
-                          accent>
-                          {status_info}
+                    onPress={() =>
+                      navigation.navigate('onsale_details', {onsale, user})
+                    }>
+                    <View style={{flexDirection: 'row'}}>
+                      <Icon
+                        icon={flag}
+                        style={{height: wp(10), width: wp(10)}}
+                      />
+                      <Bg_view no_bg flex style={{marginLeft: wp(1.4)}}>
+                        <Fr_text bold size={wp(4.5)}>
+                          {`${commalise_figures(amount)} ${alphabetic_name}`}
                         </Fr_text>
+                        <Fr_text size={wp(3.5)}>{`x ${commalise_figures(
+                          offer_rate,
+                        )}`}</Fr_text>
                       </Bg_view>
                     </View>
                   </TouchableNativeFeedback>
-                  <Fr_text bold size={wp(4.5)}>
-                    {`${commalise_figures(amount * offer_rate)} NGN`}
-                  </Fr_text>
+                </Bg_view>
+
+                <Bg_view
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    zIndex: -5,
+                  }}>
+                  <Icon
+                    icon={require('../../android/app/src/main/assets/Icons/exchange_chat_icon.png')}
+                    style={{marginHorizontal: wp(2.8)}}
+                  />
+                </Bg_view>
+                <Bg_view style={{flex: 4, alignItems: 'flex-end'}}>
+                  <Bg_view style={{alignItems: 'flex-end', flexWrap: 'wrap'}}>
+                    <TouchableNativeFeedback
+                      onPress={() => this.toggle_status_info()}>
+                      <View>
+                        <Bg_view
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Icon
+                            icon={require('../../android/app/src/main/assets/Icons/info.png')}
+                          />
+                          <Fr_text
+                            style={{marginLeft: 2.5}}
+                            capitalise
+                            italic
+                            size={wp(3.5)}
+                            accent>
+                            {status_info}
+                          </Fr_text>
+                        </Bg_view>
+                      </View>
+                    </TouchableNativeFeedback>
+                    <Fr_text bold size={wp(4.5)}>
+                      {`${commalise_figures(amount * offer_rate)} NGN`}
+                    </Fr_text>
+                  </Bg_view>
                 </Bg_view>
               </Bg_view>
-            </Bg_view>
 
-            <Bg_view>
-              {message ? (
-                <Message
-                  message={message}
-                  loggeduser={user}
-                  navigation={navigation}
-                  onsale={onsale}
-                  centralise
-                />
-              ) : offer_need.need === 'bank transfer' ? (
-                (
-                  <Bg_view>
-                    <Fr_text italic centralise>
-                      About the Transaction
-                    </Fr_text>
-                    <Offer_details
-                      style={{marginVertical: hp(1.4)}}
-                      text={offer_need.message}
-                    />
-                  </Bg_view>
-                ) || (
-                  <Bank_transfer
-                    bank_transfer={offer_need}
-                    is_seller={is_seller}
+              <Bg_view>
+                {message ? (
+                  <Message
+                    message={message}
+                    loggeduser={user}
+                    navigation={navigation}
+                    onsale={onsale}
+                    centralise
                   />
-                )
-              ) : (
-                <Online_registration reg={offer_need} is_seller={is_seller} />
-              )}
-            </Bg_view>
+                ) : offer_need?.need === 'bank transfer' ? (
+                  (
+                    <Bg_view>
+                      <Fr_text italic centralise>
+                        About the Transaction
+                      </Fr_text>
+                      <Offer_details
+                        style={{marginVertical: hp(1.4)}}
+                        text={offer_need?.message}
+                      />
+                    </Bg_view>
+                  ) || (
+                    <Bank_transfer
+                      bank_transfer={offer_need}
+                      is_seller={is_seller}
+                    />
+                  )
+                ) : (
+                  <Online_registration reg={offer_need} is_seller={is_seller} />
+                )}
+              </Bg_view>
 
-            <Line />
-            {no_foot ? null : status === 'in-dispute' ? (
-              <Text_btn
-                text="in-dispute"
-                capitalise
-                centralise
-                accent
-                action={this.dispute}
-              />
-            ) : status__ && status__ !== status ? null : (
-              <Bg_view
-                style={{
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                }}>
-                {user._id !== seller._id /* loggeduser is buyer */ ? (
-                  <Bg_view
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                    }}>
-                    {status === 'accepted' ? (
-                      <Bg_view
-                        horizontal
-                        style={{flexWrap: 'wrap', justifyContent: 'center'}}>
-                        <Fr_text centralise>
-                          Seller has accepted your offer, proceed by making your
-                          deposit into the escrow account
-                        </Fr_text>
+              <Line />
+              {no_foot ? null : status === 'in-dispute' ? (
+                <Text_btn
+                  text="in-dispute"
+                  capitalise
+                  centralise
+                  accent
+                  action={this.dispute}
+                />
+              ) : status__ && status__ !== status ? null : (
+                <Bg_view
+                  style={{
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                  }}>
+                  {user._id !== seller._id /* loggeduser is buyer */ ? (
+                    <Bg_view
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                      }}>
+                      {status === 'accepted' ? (
+                        <Bg_view
+                          horizontal
+                          style={{flexWrap: 'wrap', justifyContent: 'center'}}>
+                          <Fr_text centralise>
+                            Seller has accepted your offer, proceed by making
+                            your deposit into the escrow account
+                          </Fr_text>
 
-                        <Small_btn
-                          title="make deposit"
-                          action={() =>
-                            this.cool_modal_deposit?.toggle_show_modal()
-                          }
-                          style={{paddingHorizontal: wp(2.8)}}
-                          accent
-                          capitalise
-                        />
-                      </Bg_view>
-                    ) : status === 'in-escrow' ? (
-                      disputable && !requested_time ? (
-                        <Bg_view horizontal style={{flexWrap: 'wrap'}}>
-                          <Text_btn
-                            text="extend time"
-                            action={this.extend_time}
-                            accent
-                            capitalise
-                            style={{
-                              borderRightWidth: 1,
-                              borderRightColor: '#ccc',
-                              flexWrap: 'wrap',
-                            }}
-                          />
-                          <Text_btn
-                            text="dispute"
-                            action={this.submit_dispute}
+                          <Small_btn
+                            title="make deposit"
+                            action={() =>
+                              this.cool_modal_deposit?.toggle_show_modal()
+                            }
+                            style={{paddingHorizontal: wp(2.8)}}
                             accent
                             capitalise
                           />
                         </Bg_view>
-                      ) : (
-                        <Countdown
-                          on_touch={() => toast('Awaiting buyer confirmation.')}
-                          timestamp={timestamp + this.aday}
-                        />
-                      )
-                    ) : status === 'awaiting confirmation' ? (
-                      disputable ? (
-                        <Bg_view style={{alignItems: 'center'}}>
-                          <Fr_text centralise>
-                            Need more time to confirm transaction?{' '}
-                          </Fr_text>
+                      ) : status === 'in-escrow' ? (
+                        disputable && !requested_time ? (
+                          <Bg_view horizontal style={{flexWrap: 'wrap'}}>
+                            <Text_btn
+                              text="extend time"
+                              action={this.extend_time}
+                              accent
+                              capitalise
+                              style={{
+                                borderRightWidth: 1,
+                                borderRightColor: '#ccc',
+                                flexWrap: 'wrap',
+                              }}
+                            />
+                            <Text_btn
+                              text="dispute"
+                              action={this.submit_dispute}
+                              accent
+                              capitalise
+                            />
+                          </Bg_view>
+                        ) : (
+                          <Countdown
+                            on_touch={() =>
+                              toast('Awaiting buyer confirmation.')
+                            }
+                            timestamp={timestamp + this.aday}
+                          />
+                        )
+                      ) : status === 'awaiting confirmation' ? (
+                        disputable ? (
+                          <Bg_view style={{alignItems: 'center'}}>
+                            <Fr_text centralise>
+                              Need more time to confirm transaction?{' '}
+                            </Fr_text>
+                            <Text_btn
+                              text={
+                                requested_time
+                                  ? 'awaiting time extension'
+                                  : 'request time extension'
+                              }
+                              action={this.request_time_extension}
+                              capitalise
+                              accent
+                              disabled={requested_time}
+                            />
+                          </Bg_view>
+                        ) : (
+                          <Bg_view
+                            style={{
+                              alignItems: 'center',
+                              marginVertical: hp(1.4),
+                            }}>
+                            <Fr_text centralise>
+                              Seller has claimed to fulfil transaction, awaiting
+                              your confirmation to proceed.
+                            </Fr_text>
+                            <Text_btn
+                              icon={require('../../android/app/src/main/assets/Icons/accept.png')}
+                              text="confirm"
+                              action={() =>
+                                this.cool_modal_confirm?.toggle_show_modal()
+                              }
+                              accent
+                              capitalise
+                            />
+                          </Bg_view>
+                        )
+                      ) : status === 'completed' ? null : (
+                        <Bg_view horizontal>
+                          <Bg_view flex>
+                            <Fr_text>No longer interested?</Fr_text>
+                          </Bg_view>
+
+                          <Bg_view flex>
+                            <Text_btn
+                              icon={require('../../android/app/src/main/assets/Icons/decline.jpeg')}
+                              text="remove offer"
+                              action={() => this.toggle_remove_offer()}
+                              accent
+                              capitalise
+                            />
+                          </Bg_view>
+                        </Bg_view>
+                      )}
+
+                      {status === 'declined' || status__ ? null : (
+                        <Bg_view
+                          horizontal
+                          style={{
+                            borderRightWidth: 1,
+                            borderRightColor: '#eee',
+                          }}>
+                          <Bg_view flex>
+                            <Fr_text size={wp(3.5)}>Having issues?</Fr_text>
+                          </Bg_view>
+                          <Bg_view flex>
+                            <Text_btn
+                              icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
+                              action={this.go_to_chat}
+                              size={wp(3.5)}
+                              text={user.is_admin ? 'Respond' : `Contact Admin`}
+                              accent
+                            />
+                          </Bg_view>
+                        </Bg_view>
+                      )}
+                    </Bg_view>
+                  ) : (
+                    /* loggeduser is seller */ <Bg_view
+                      style={{justifyContent: 'center', alignItems: 'center'}}>
+                      {status === 'declined' ? null : status ===
+                        'accepted' ? null : status === 'in-escrow' ? (
+                        disputable ? (
                           <Text_btn
                             text={
                               requested_time
-                                ? 'awaiting time extension'
+                                ? 'Awaiting time extension'
                                 : 'request time extension'
                             }
                             action={this.request_time_extension}
@@ -441,263 +564,188 @@ class Offer extends React.Component {
                             accent
                             disabled={requested_time}
                           />
-                        </Bg_view>
-                      ) : (
+                        ) : (
+                          <Bg_view style={{alignItems: 'center'}}>
+                            <Fr_text centralise size={wp(3.5)}>
+                              Offer settlement has been transfered to escrow by
+                              buyer, click fulfil to let us know you have
+                              carried out the transaction
+                            </Fr_text>
+
+                            <Small_btn
+                              title="fulfilled"
+                              action={() =>
+                                this.fulfil_modal?.toggle_show_modal()
+                              }
+                            />
+                          </Bg_view>
+                        )
+                      ) : status === 'awaiting confirmation' ? (
+                        disputable && !requested_time ? (
+                          <Bg_view horizontal style={{flexWrap: 'wrap'}}>
+                            <Text_btn
+                              text="extend time"
+                              action={this.extend_time}
+                              accent
+                              capitalise
+                              style={{
+                                borderRightWidth: 1,
+                                borderRightColor: '#ccc',
+                              }}
+                            />
+                            <Text_btn
+                              text="dispute"
+                              action={this.submit_dispute}
+                              accent
+                              capitalise
+                            />
+                          </Bg_view>
+                        ) : (
+                          <Countdown
+                            on_touch={() => toast('Awaiting seller to fulfil.')}
+                            timestamp={timestamp + this.aday}
+                          />
+                        )
+                      ) : status === 'completed' ? null : null}
+                      {status === 'declined' ? (
                         <Bg_view
                           style={{
                             alignItems: 'center',
-                            marginVertical: hp(1.4),
                           }}>
-                          <Fr_text centralise>
-                            Seller has claimed to fulfil transaction, awaiting
-                            your confirmation to proceed.
-                          </Fr_text>
-                          <Text_btn
-                            icon={require('../../android/app/src/main/assets/Icons/accept.png')}
-                            text="confirm"
-                            action={() =>
-                              this.cool_modal_confirm?.toggle_show_modal()
-                            }
-                            accent
-                            capitalise
-                          />
+                          <Text_btn text="Declined!" />
                         </Bg_view>
-                      )
-                    ) : status === 'completed' ? null : (
-                      <Bg_view horizontal>
-                        <Bg_view flex>
-                          <Fr_text>No longer interested?</Fr_text>
-                        </Bg_view>
+                      ) : null}
 
-                        <Bg_view flex>
-                          <Text_btn
-                            icon={require('../../android/app/src/main/assets/Icons/decline.jpeg')}
-                            text="remove offer"
-                            action={() => this.toggle_remove_offer()}
-                            accent
-                            capitalise
-                          />
+                      {status === 'pending' && user._id === seller._id ? (
+                        <Bg_view style={{alignItems: 'center'}}>
+                          <Line />
+                          <Fr_text>New offer placed</Fr_text>
+                          <Bg_view
+                            horizontal
+                            style={{justifyContent: 'center'}}>
+                            <Small_btn title="accept" action={this.accept} />
+                            {status === 'pending' ? (
+                              <Small_btn
+                                inverted
+                                title="decline"
+                                action={this.decline}
+                              />
+                            ) : null}
+                          </Bg_view>
                         </Bg_view>
-                      </Bg_view>
-                    )}
+                      ) : null}
 
-                    {status === 'declined' || status__ ? null : (
-                      <Bg_view
-                        horizontal
-                        style={{
-                          borderRightWidth: 1,
-                          borderRightColor: '#eee',
-                        }}>
-                        <Bg_view flex>
+                      {status === 'declined' ? null : !status__ ? (
+                        <Bg_view
+                          horizontal
+                          style={{
+                            borderRightWidth: 1,
+                            borderRightColor: '#eee',
+                            marginTop: 15,
+                          }}>
                           <Fr_text size={wp(3.5)}>Having issues?</Fr_text>
-                        </Bg_view>
-                        <Bg_view flex>
                           <Text_btn
                             icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
                             action={this.go_to_chat}
                             size={wp(3.5)}
+                            accent
+                            style={{fontSize: wp(4)}}
                             text={user.is_admin ? 'Respond' : `Contact Admin`}
-                            accent
                           />
                         </Bg_view>
-                      </Bg_view>
-                    )}
-                  </Bg_view>
-                ) : (
-                  /* loggeduser is seller */ <Bg_view
-                    style={{justifyContent: 'center', alignItems: 'center'}}>
-                    {status === 'declined' ? null : status ===
-                      'accepted' ? null : status === 'in-escrow' ? (
-                      disputable ? (
-                        <Text_btn
-                          text={
-                            requested_time
-                              ? 'Awaiting time extension'
-                              : 'request time extension'
-                          }
-                          action={this.request_time_extension}
-                          capitalise
-                          accent
-                          disabled={requested_time}
-                        />
-                      ) : (
-                        <Bg_view style={{alignItems: 'center'}}>
-                          <Fr_text centralise size={wp(3.5)}>
-                            Offer settlement has been transfered to escrow by
-                            buyer, click fulfil to let us know you have carried
-                            out the transaction
-                          </Fr_text>
-
-                          <Small_btn
-                            title="fulfilled"
-                            action={() =>
-                              this.fulfil_modal?.toggle_show_modal()
-                            }
-                          />
-                        </Bg_view>
-                      )
-                    ) : status === 'awaiting confirmation' ? (
-                      disputable && !requested_time ? (
-                        <Bg_view horizontal style={{flexWrap: 'wrap'}}>
-                          <Text_btn
-                            text="extend time"
-                            action={this.extend_time}
-                            accent
-                            capitalise
-                            style={{
-                              borderRightWidth: 1,
-                              borderRightColor: '#ccc',
-                            }}
-                          />
-                          <Text_btn
-                            text="dispute"
-                            action={this.submit_dispute}
-                            accent
-                            capitalise
-                          />
-                        </Bg_view>
-                      ) : (
-                        <Countdown
-                          on_touch={() => toast('Awaiting seller to fulfil.')}
-                          timestamp={timestamp + this.aday}
-                        />
-                      )
-                    ) : status === 'completed' ? null : null}
-                    {status === 'declined' ? (
-                      <Bg_view
-                        style={{
-                          alignItems: 'center',
-                        }}>
-                        <Text_btn text="Declined!" />
-                      </Bg_view>
-                    ) : null}
-
-                    {status === 'pending' && user._id === seller._id ? (
-                      <Bg_view style={{alignItems: 'center'}}>
-                        <Line />
-                        <Fr_text>New offer placed</Fr_text>
-                        <Bg_view horizontal style={{justifyContent: 'center'}}>
-                          <Small_btn title="accept" action={this.accept} />
-                          {status === 'pending' ? (
-                            <Small_btn
-                              inverted
-                              title="decline"
-                              action={this.decline}
-                            />
-                          ) : null}
-                        </Bg_view>
-                      </Bg_view>
-                    ) : null}
-
-                    {status === 'declined' ? null : !status__ ? (
-                      <Bg_view
-                        horizontal
-                        style={{
-                          borderRightWidth: 1,
-                          borderRightColor: '#eee',
-                          marginTop: 15,
-                        }}>
-                        <Fr_text size={wp(3.5)}>Having issues?</Fr_text>
-                        <Text_btn
-                          icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
-                          action={this.go_to_chat}
-                          size={wp(3.5)}
-                          accent
-                          style={{fontSize: wp(4)}}
-                          text={user.is_admin ? 'Respond' : `Contact Admin`}
-                        />
-                      </Bg_view>
-                    ) : null}
-                  </Bg_view>
-                )}
-              </Bg_view>
-            )}
-            {seller._id === user._id &&
-            status === 'in-escrow' ? null : seller._id !== user._id &&
-              status === 'awaiting confirmation' ? null : requested_time &&
-              status !== 'in-dispute' ? (
-              <Bg_view style={{alignItems: 'center'}}>
-                <Fr_text centralise>
-                  Party requested a time extension to respond to transaction.
-                </Fr_text>
-                <Bg_view horizontal>
-                  <Text_btn
-                    action={this.extend_time}
-                    text="extend time"
-                    accent
-                    capitalise
-                    style={{borderRightWidth: 1, borderRightColor: '#ccc'}}
-                  />
-                  <Text_btn
-                    action={this.submit_dispute}
-                    text="dispute"
-                    accent
-                    capitalise
-                  />
+                      ) : null}
+                    </Bg_view>
+                  )}
                 </Bg_view>
-              </Bg_view>
-            ) : null}
+              )}
+              {seller._id === user._id &&
+              status === 'in-escrow' ? null : seller._id !== user._id &&
+                status === 'awaiting confirmation' ? null : requested_time &&
+                status !== 'in-dispute' ? (
+                <Bg_view style={{alignItems: 'center'}}>
+                  <Fr_text centralise>
+                    Party requested a time extension to respond to transaction.
+                  </Fr_text>
+                  <Bg_view horizontal>
+                    <Text_btn
+                      action={this.extend_time}
+                      text="extend time"
+                      accent
+                      capitalise
+                      style={{borderRightWidth: 1, borderRightColor: '#ccc'}}
+                    />
+                    <Text_btn
+                      action={this.submit_dispute}
+                      text="dispute"
+                      accent
+                      capitalise
+                    />
+                  </Bg_view>
+                </Bg_view>
+              ) : null}
 
-            {status === 'accepted' && user._id === seller._id ? (
-              <Fr_text centralise italic>
-                Awaiting buyer to make deposit into escrow before proceeding
-                with transaction.
-              </Fr_text>
-            ) : null}
-          </Bg_view>
-          <Cool_modal
-            ref={cool_modal_deposit =>
-              (this.cool_modal_deposit = cool_modal_deposit)
-            }>
-            <Deposit_to_escrow
-              onsale={onsale}
-              offer={offer}
-              wallet={user.wallet}
-              navigation={navigation}
-              close_modal={() => this.cool_modal_deposit?.toggle_show_modal()}
-            />
-          </Cool_modal>
+              {status === 'accepted' && user._id === seller._id ? (
+                <Fr_text centralise italic>
+                  Awaiting buyer to make deposit into escrow before proceeding
+                  with transaction.
+                </Fr_text>
+              ) : null}
+            </Bg_view>
+            <Cool_modal
+              ref={cool_modal_deposit =>
+                (this.cool_modal_deposit = cool_modal_deposit)
+              }>
+              <Deposit_to_escrow
+                onsale={onsale}
+                offer={offer}
+                wallet={user.wallet}
+                navigation={navigation}
+                close_modal={() => this.cool_modal_deposit?.toggle_show_modal()}
+              />
+            </Cool_modal>
 
-          <Cool_modal ref={fulfil_modal => (this.fulfil_modal = fulfil_modal)}>
-            <Fulfil
-              offer={offer}
-              onsale={onsale}
-              navigation={navigation}
-              close_modal={() => this.fulfil_modal?.toggle_show_modal()}
-            />
-          </Cool_modal>
-          <Cool_modal
-            ref={cool_modal_confirm =>
-              (this.cool_modal_confirm = cool_modal_confirm)
-            }>
-            <Confirm_transaction
-              offer={offer}
-              onsale={onsale}
-              admin_in_dispute={admin_in_dispute}
-              navigation={navigation}
-              user={user}
-              close_modal={() => this.cool_modal_confirm?.toggle_show_modal()}
-            />
-          </Cool_modal>
+            <Cool_modal
+              ref={fulfil_modal => (this.fulfil_modal = fulfil_modal)}>
+              <Fulfil
+                offer={offer}
+                onsale={onsale}
+                navigation={navigation}
+                close_modal={() => this.fulfil_modal?.toggle_show_modal()}
+              />
+            </Cool_modal>
+            <Cool_modal
+              ref={cool_modal_confirm =>
+                (this.cool_modal_confirm = cool_modal_confirm)
+              }>
+              <Confirm_transaction
+                offer={offer}
+                onsale={onsale}
+                admin_in_dispute={admin_in_dispute}
+                navigation={navigation}
+                user={user}
+                close_modal={() => this.cool_modal_confirm?.toggle_show_modal()}
+              />
+            </Cool_modal>
 
-          <Cool_modal ref={remove => (this.remove = remove)}>
-            <Confirm_remove_offer
-              offer={offer}
-              toggle={this.toggle_remove_offer}
-              proceed={this.remove_offer}
-            />
-          </Cool_modal>
+            <Cool_modal ref={remove => (this.remove = remove)}>
+              <Confirm_remove_offer
+                offer={offer}
+                toggle={this.toggle_remove_offer}
+                proceed={this.remove_offer}
+              />
+            </Cool_modal>
 
-          <Cool_modal
-            center
-            ref={status_info => (this.status_info = status_info)}>
-            <Status_info
-              status={status_info}
-              toggle={this.toggle_status_info}
-            />
-          </Cool_modal>
-        </View>
-      </TouchableWithoutFeedback>
+            <Cool_modal
+              center
+              ref={status_info => (this.status_info = status_info)}>
+              <Status_info
+                status={status_info}
+                toggle={this.toggle_status_info}
+              />
+            </Cool_modal>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
     );
   };
 }
