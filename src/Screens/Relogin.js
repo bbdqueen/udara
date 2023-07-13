@@ -87,7 +87,7 @@ class Relogin extends React.Component {
                         centralise
                         size={wp(3.8)}
                         style={{marginBottom: hp(2.8)}}>
-                        Provide your email to proceed into the app.
+                        Provide your password to proceed into the app.
                       </Fr_text>
 
                       <Text_input

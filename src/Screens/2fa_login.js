@@ -39,7 +39,7 @@ class Two_factor_auth_login extends React.Component {
 
   set_code = code =>
     this.setState({
-      code: code.trim(),
+      code: code?.trim(),
       valid_code: /^[0-9]{6}$/.test(String(code)),
     });
 
@@ -54,10 +54,10 @@ class Two_factor_auth_login extends React.Component {
 
     let res = await post_request('verify_email', {
       email,
-      code: code.trim(),
+      code: code?.trim(),
     });
 
-    if (res?.user) {
+    if (res?.user || res?.email) {
       emitter.emit('logged_in', {user, wallet});
     } else toast(res?.message || 'Email verification failed');
   };

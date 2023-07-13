@@ -53,7 +53,7 @@ class Amount_to_sell extends React.Component {
   };
 
   sell = () => {
-    let {navigation, user} = this.props;
+    let {navigation, close_modal, user} = this.props;
     let {value, rate, currency_full, currency} = this.state;
 
     navigation.navigate('sell', {
@@ -64,6 +64,7 @@ class Amount_to_sell extends React.Component {
       wallet: user.wallet,
       currency_full,
     });
+    close_modal && close_modal();
   };
 
   render = () => {

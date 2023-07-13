@@ -36,7 +36,7 @@ class Generate_account_number extends React.Component {
 
     let payment_url =
       account_details &&
-      `https://pages.getbrass.co/payment/${account_details?.account_id}`;
+      `https://pages.trybrass.com/payment/${account_details?.account_id}`;
 
     return (
       <Bg_view flex>
@@ -58,12 +58,6 @@ class Generate_account_number extends React.Component {
                 <Fr_text bold italic>
                   {error_message}
                 </Fr_text>
-                <Text_btn
-                  text="Update Phone"
-                  bold
-                  accent
-                  action={() => navigation.navigate('update_phone', {user})}
-                />
               </Bg_view>
             ) : (
               <Bg_view style={{alignItems: 'center', padding: wp(4)}}>
@@ -88,8 +82,8 @@ class Generate_account_number extends React.Component {
                 <Fr_text size={16} style={{marginTop: hp(1.4)}}>
                   Bank
                 </Fr_text>
-                <Fr_text bold size={22} capitalise>
-                  {account_details?.bank_name || 'Wema Bank'}
+                <Fr_text bold size={22}>
+                  {account_details?.bank_name || 'PAGA'}
                 </Fr_text>
 
                 <Bg_view style={{alignItems: 'center', marginTop: 20}}>

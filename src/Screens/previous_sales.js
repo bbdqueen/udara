@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView} from 'react-native';
-import {User} from '../../Udara';
+import {User, emitter} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Header from '../Components/header';
 import List_empty from '../Components/list_empty';
@@ -10,7 +10,7 @@ import {hp, wp} from '../utils/dimensions';
 import {post_request} from '../utils/services';
 import Text_btn from '../Components/Text_btn';
 
-class My_sales extends React.Component {
+class Previous_sales extends React.Component {
   constructor(props) {
     super(props);
 
@@ -27,7 +27,7 @@ class My_sales extends React.Component {
 
     let {page, page_size} = this.state;
 
-    let onsales = await post_request(`my_sales/${this.loggeduser._id}`, {
+    let onsales = await post_request(`previous_sales/${this.loggeduser._id}`, {
       skip: page * page_size,
       limit: page_size,
     });
@@ -51,14 +51,14 @@ class My_sales extends React.Component {
           return (
             <Bg_view flex>
               <Header
-                title="my sales"
+                title="previous sales"
                 navigation={navigation}
                 right_btn={
                   <Text_btn
                     style={{paddingRight: wp(4)}}
-                    text="History"
+                    text="New"
                     accent
-                    action={() => navigation.navigate('previous_sales')}
+                    action={() => emitter.emit('new_sale')}
                   />
                 }
               />
@@ -76,7 +76,7 @@ class My_sales extends React.Component {
                         />
                       ))
                     ) : (
-                      <List_empty text={"You don't have any currency onsale"} />
+                      <List_empty text={"You don't have any currency sold"} />
                     )
                   ) : (
                     <Loadindicator />
@@ -91,4 +91,4 @@ class My_sales extends React.Component {
   }
 }
 
-export default My_sales;
+export default Previous_sales;

@@ -59,12 +59,18 @@ class Home extends React.Component {
       unseen: true,
       limit: 5,
     });
+
+    this.new_sale = () => this.toggle_sell();
+
+    emitter.listen('new_sale', this.new_sale);
+
     this.setState({notifications});
   };
 
   componentWillUnmount = () => {
     emitter.remove_listener('transaction_mounted', this.transaction_mounted);
     emitter.remove_listener('new_transaction', this.new_transaction);
+    emitter.remove_listener('new_sale', this.new_sale);
   };
 
   toggle_buy = () => this.buy_modal?.toggle_show_modal();

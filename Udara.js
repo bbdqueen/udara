@@ -57,6 +57,7 @@ import Create_admin from './src/Screens/create_admin';
 import Manage_admins from './src/Screens/manage_admins';
 import Platform_reports from './src/Screens/platform_reports';
 import User_wallet from './src/Screens/user_wallet';
+import Previous_sales from './src/Screens/previous_sales';
 
 const User = React.createContext();
 
@@ -271,6 +272,7 @@ class App_stack_entry extends React.Component {
         <App_stack.Screen name="user_wallet" component={User_wallet} />
         <App_stack.Screen name="sell" component={Sell} />
         <App_stack.Screen name="my_sales" component={My_sales} />
+        <App_stack.Screen name="previous_sales" component={Previous_sales} />
         <App_stack.Screen name="create_admin" component={Create_admin} />
         <App_stack.Screen
           name="platform_reports"
