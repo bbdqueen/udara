@@ -47,7 +47,7 @@ class Withdraw extends React.Component {
     valid = Number(value) && Number(value) > 0;
     if (valid) {
       if (paycheck) valid = Number(value) <= wallet.profits;
-      else valid = Number(value) <= wallet.naira;
+      else valid = Number(value) <= wallet.available_balance;
     }
 
     this.setState({
@@ -65,10 +65,16 @@ class Withdraw extends React.Component {
     this.setState({loading: true});
     let {decorator, user, paycheck} = this.props;
     let {value, currency, bank_account} = this.state;
-    60;
-    // return console.log(bank_account);
-    if (!Number(value)) {
-      toast('Invalid transaction value');
+
+    value = Number(value);
+    let msg = !value
+      ? 'Invalid transaction value'
+      : value < 100
+      ? 'Amount cannot be below 100'
+      : null;
+
+    if (msg) {
+      toast(msg);
       return this.setState({loading: false});
     }
 
@@ -125,6 +131,7 @@ class Withdraw extends React.Component {
             margin: wp(2.8),
           }}>
           <TextInput
+            placeholderTextColor="#ccc"
             placeholder="Enter amount"
             autoFocus
             value={value}

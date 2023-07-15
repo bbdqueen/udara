@@ -48,7 +48,10 @@ class Add_bank_account extends React.Component {
 
   save_bank_account = async () => {
     let {user, toggle} = this.props;
-    let {bank, account_name, account_number} = this.state;
+    let {bank, account_name, loading, account_number} = this.state;
+
+    if (loading) return;
+    this.setState({loading: true});
 
     let bank_account = {
       bank_id: bank.id,
@@ -70,7 +73,7 @@ class Add_bank_account extends React.Component {
 
   render() {
     let {toggle} = this.props;
-    let {account_number, account_name, message, resolving_name, bank} =
+    let {account_number, loading, account_name, message, resolving_name, bank} =
       this.state;
 
     return (
@@ -126,6 +129,7 @@ class Add_bank_account extends React.Component {
           title="save"
           action={this.save_bank_account}
           disabled={
+            loading ||
             !bank ||
             !account_name ||
             !account_number ||

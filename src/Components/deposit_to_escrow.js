@@ -5,12 +5,10 @@ import {commalise_figures} from '../utils/functions';
 import {post_request} from '../utils/services';
 import toast from '../utils/toast';
 import Bg_view from './Bg_view';
-import Cool_modal from './cool_modal';
 import Fr_text from './Fr_text';
 import Icon from './Icon';
 import Line from './line';
 import Small_btn from './small_button';
-import Topup from './topup';
 
 class Deposit_to_escrow extends React.Component {
   constructor(props) {

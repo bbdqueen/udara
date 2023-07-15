@@ -16,7 +16,7 @@ class Wallet extends React.Component {
   render() {
     let {navigation, wallet, user} = this.props;
     let {_id, username} = user;
-    let {fav_currency, profits} = wallet;
+    let {fav_currency, profits, available_balance} = wallet;
 
     return (
       <TouchableWithoutFeedback
@@ -40,7 +40,7 @@ class Wallet extends React.Component {
                 <Fr_text color="#fff">Udara Wallet</Fr_text>
                 <Fr_text
                   color="#fff"
-                  style={{marginTop: hp(2.8)}}
+                  style={{marginTop: hp(2)}}
                   size={wp(4)}
                   bold="600">
                   Total balance
@@ -52,18 +52,25 @@ class Wallet extends React.Component {
                       : '0.00'
                   } NGN`}
                 </Fr_text>
-                <Bg_view no_bg>
+                <Bg_view no_bg style={{marginTop: 5}}>
                   <Fr_text
                     bold={user.is_admin && profits && '600'}
                     color="#fff"
+                    size={wp(3.5)}
                     capitalise>
-                    {user.is_admin && profits ? 'admin balance' : username}
+                    {user.is_admin && profits
+                      ? 'admin balance'
+                      : 'Available Balance'}
                   </Fr_text>
                   {user.is_admin && profits ? (
                     <Fr_text bold size={wp(5)} color="#fff">
                       {`${profits} NGN`}
                     </Fr_text>
-                  ) : null}
+                  ) : (
+                    <Fr_text bold size={wp(4)} color="#fff">
+                      {`${available_balance || '-'} NGN`}
+                    </Fr_text>
+                  )}
                 </Bg_view>
               </Bg_view>
               <Icon

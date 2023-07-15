@@ -128,51 +128,50 @@ class Home extends React.Component {
 
           return (
             <Bg_view flex>
+              <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+              <Bg_view
+                no_bg
+                horizontal
+                style={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: wp(2.8),
+                }}>
+                <Icon
+                  icon={require('../../android/app/src/main/assets/Icons/acccount_orange_icon.png')}
+                  action={() => navigation.navigate('account')}
+                />
+                <View style={{flex: 1, alignItems: 'center'}}>
+                  <Fr_text capitalise size={wp(4.5)}>
+                    {username}
+                  </Fr_text>
+                </View>
+                {new_txs.length ? (
+                  <Icon
+                    icon={require('../../android/app/src/main/assets/Icons/notification_icon.png')}
+                    action={() => {
+                      navigation.navigate('wallet'),
+                        this.setState({new_txs: new Array()});
+                    }}
+                  />
+                ) : (
+                  <View style={{width: wp(5)}} />
+                )}
+
+                {user.is_admin ? (
+                  <Icon
+                    icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
+                    action={() => navigation.navigate('admin_messages')}
+                  />
+                ) : null}
+
+                <Icon
+                  icon="refresh.png"
+                  action={() => emitter.emit('refresh_wallet')}
+                />
+              </Bg_view>
               <ScrollView showsVerticalScrollIndicator={false}>
-                <StatusBar backgroundColor="#fff" barStyle="dark-content" />
                 <Bg_view flex>
-                  <Bg_view
-                    no_bg
-                    horizontal
-                    style={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: wp(2.8),
-                    }}>
-                    <Icon
-                      icon={require('../../android/app/src/main/assets/Icons/acccount_orange_icon.png')}
-                      action={() => navigation.navigate('account')}
-                    />
-                    <View style={{flex: 1, alignItems: 'center'}}>
-                      <Fr_text capitalise size={wp(4.5)}>
-                        {username}
-                      </Fr_text>
-                    </View>
-                    {new_txs.length ? (
-                      <Icon
-                        icon={require('../../android/app/src/main/assets/Icons/notification_icon.png')}
-                        action={() => {
-                          navigation.navigate('wallet'),
-                            this.setState({new_txs: new Array()});
-                        }}
-                      />
-                    ) : (
-                      <View style={{width: wp(5)}} />
-                    )}
-
-                    {user.is_admin ? (
-                      <Icon
-                        icon={require('../../android/app/src/main/assets/Icons/chat_send_icon.png')}
-                        action={() => navigation.navigate('admin_messages')}
-                      />
-                    ) : null}
-
-                    <Icon
-                      icon="refresh.png"
-                      action={() => emitter.emit('refresh_wallet')}
-                    />
-                  </Bg_view>
-
                   <Wallet wallet={wallet} user={user} navigation={navigation} />
 
                   <Bg_view>

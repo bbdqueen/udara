@@ -25,7 +25,6 @@ class Dispute extends React.Component {
 
     let dispute = await get_request(`dispute/${offer._id}`);
 
-    console.log(dispute);
     if (dispute && !dispute?.offer?._id)
       dispute.offer = await post_request('offer', {
         offer: dispute.offer,
@@ -39,14 +38,15 @@ class Dispute extends React.Component {
 
   goto_chat = () => {
     let {navigation, route} = this.props;
-    let {user, onsale, offer} = route.params;
+    let {onsale, offer} = route.params;
 
     navigation.navigate('chat', {offer, onsale});
   };
 
   admin_action = refund_buyer => {
-    this.setState({refund_buyer});
-    this.admin_action_modal?.toggle_show_modal();
+    this.setState({refund_buyer}, () =>
+      this.admin_action_modal?.toggle_show_modal(),
+    );
   };
 
   render() {

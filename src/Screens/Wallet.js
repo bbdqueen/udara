@@ -59,7 +59,7 @@ class Wallet extends React.Component {
     return balance ? commalise_figures(Number(balance).toFixed(2)) : '0.00';
   };
 
-  wallet_balance = (balance, profits) => {
+  wallet_balance = (balance, available_balance, profits) => {
     return (
       <Bg_view
         no_bg
@@ -85,17 +85,23 @@ class Wallet extends React.Component {
             <Fr_text
               bold={this.user.is_admin && profits && '600'}
               color="#fff"
+              style={{marginTop: 5}}
               capitalise>
               {this.user.is_admin && profits
                 ? 'Admin Balance: '
-                : this.user.username}
+                : 'Available Balance'}
             </Fr_text>
             {this.user.is_admin && profits ? (
               <Fr_text
                 size={wp(5)}
                 color="#fff"
                 bold>{`${profits} NGN`}</Fr_text>
-            ) : null}
+            ) : (
+              <Fr_text
+                size={wp(4)}
+                color="#fff"
+                bold>{`${available_balance} NGN`}</Fr_text>
+            )}
           </Bg_view>
         </Bg_view>
         <Icon
@@ -229,6 +235,7 @@ class Wallet extends React.Component {
 
                     {this.wallet_balance(
                       this.wallet.naira,
+                      this.wallet.available_balance,
                       this.wallet.profits,
                     )}
 
