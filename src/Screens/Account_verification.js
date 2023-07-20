@@ -3,21 +3,17 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  TextInput,
   TouchableWithoutFeedback,
-  View,
 } from 'react-native';
 import Bg_view from '../Components/Bg_view';
 import Cool_modal from '../Components/cool_modal';
 import Country_codes from '../Components/country_codes';
 import Fr_text from '../Components/Fr_text';
 import Header from '../Components/header';
-import Icon from '../Components/Icon';
 import Image_preview from '../Components/image_preview';
 import Stretched_button from '../Components/Stretched_button';
 import Text_btn from '../Components/Text_btn';
 import {wp, hp} from '../utils/dimensions';
-import {validate_phone} from '../utils/functions';
 import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 import {domain, post_request} from '../utils/services';

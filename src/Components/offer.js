@@ -3,6 +3,7 @@ import {
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
   View,
+  Image,
 } from 'react-native';
 import {hp, wp} from '../utils/dimensions';
 import Bg_view from './Bg_view';
@@ -10,7 +11,7 @@ import Fr_text from './Fr_text';
 import Icon from './Icon';
 import Small_btn from './small_button';
 import {emitter, Is_admin, Sock_offer_status} from './../../Udara';
-import {post_request} from '../utils/services';
+import {domain, post_request} from '../utils/services';
 import Text_btn from './Text_btn';
 import Cool_modal from './cool_modal';
 import Deposit_to_escrow from './deposit_to_escrow';
@@ -25,6 +26,7 @@ import Line from './line';
 import Confirm_remove_offer from './confirm_remove_offer';
 import Status_info from './status_info';
 import {commalise_figures} from '../utils/functions';
+import Image_preview from './image_preview';
 
 class Offer extends React.Component {
   constructor(props) {
@@ -154,6 +156,8 @@ class Offer extends React.Component {
       );
   };
 
+  toggle_image_preview = () => this.image_preview.toggle_show_modal();
+
   accept = async () => {
     if (this.state.loading) return;
     let {offer, onsale} = this.props;
@@ -255,7 +259,7 @@ class Offer extends React.Component {
     else if (typeof offer === 'string') return null;
 
     let {flag, seller, alphabetic_name} = onsale;
-    let {amount, status, offer_need, offer_rate} = offer;
+    let {amount, status, proof, offer_need, offer_rate} = offer;
 
     if (status_) status = status_;
     new_messages = new_messages || '';
@@ -474,6 +478,27 @@ class Offer extends React.Component {
                             <Fr_text centralise>
                               Need more time to confirm transaction?{' '}
                             </Fr_text>
+                            {proof ? (
+                              <Bg_view style={{alignItems: 'center'}}>
+                                {proof ? (
+                                  <TouchableWithoutFeedback
+                                    onPress={() => this.toggle_image_preview()}>
+                                    <Image
+                                      source={{
+                                        uri: `${domain}/Images/${proof}`,
+                                      }}
+                                      style={{
+                                        height: hp(10),
+                                        width: wp(20),
+                                        borderRadius: wp(2),
+                                        padding: wp(2.8),
+                                      }}
+                                    />
+                                  </TouchableWithoutFeedback>
+                                ) : null}
+                              </Bg_view>
+                            ) : null}
+
                             <Text_btn
                               text={
                                 requested_time
@@ -496,6 +521,28 @@ class Offer extends React.Component {
                               Seller has claimed to fulfil transaction, awaiting
                               your confirmation to proceed.
                             </Fr_text>
+
+                            {proof ? (
+                              <Bg_view style={{alignItems: 'center'}}>
+                                {proof ? (
+                                  <TouchableWithoutFeedback
+                                    onPress={() => this.toggle_image_preview()}>
+                                    <Image
+                                      source={{
+                                        uri: `${domain}/Images/${proof}`,
+                                      }}
+                                      style={{
+                                        height: hp(10),
+                                        width: wp(20),
+                                        borderRadius: wp(2),
+                                        padding: wp(2.8),
+                                      }}
+                                    />
+                                  </TouchableWithoutFeedback>
+                                ) : null}
+                              </Bg_view>
+                            ) : null}
+
                             <Text_btn
                               icon={require('../../android/app/src/main/assets/Icons/accept.png')}
                               text="confirm"
@@ -666,6 +713,7 @@ class Offer extends React.Component {
                   <Fr_text centralise>
                     Party requested a time extension to respond to transaction.
                   </Fr_text>
+
                   <Bg_view horizontal>
                     <Text_btn
                       action={this.extend_time}
@@ -745,6 +793,17 @@ class Offer extends React.Component {
             </Cool_modal>
           </View>
         </TouchableWithoutFeedback>
+
+        <Cool_modal
+          flex
+          height={hp()}
+          ref={image_preview => (this.image_preview = image_preview)}>
+          <Image_preview
+            image={proof}
+            title="Transaction Proof"
+            toggle={this.toggle_image_preview}
+          />
+        </Cool_modal>
       </View>
     );
   };

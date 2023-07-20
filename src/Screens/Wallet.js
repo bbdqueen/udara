@@ -97,10 +97,11 @@ class Wallet extends React.Component {
                 color="#fff"
                 bold>{`${profits} NGN`}</Fr_text>
             ) : (
-              <Fr_text
-                size={wp(4)}
-                color="#fff"
-                bold>{`${available_balance} NGN`}</Fr_text>
+              <Fr_text size={wp(4)} color="#fff" bold>{`${
+                available_balance
+                  ? commalise_figures(Number(available_balance).toFixed(2))
+                  : '- '
+              } NGN`}</Fr_text>
             )}
           </Bg_view>
         </Bg_view>

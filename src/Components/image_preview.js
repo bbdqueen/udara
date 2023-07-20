@@ -13,11 +13,11 @@ class Image_preview extends React.Component {
   }
 
   render() {
-    let {image, toggle} = this.props;
+    let {image, toggle, title} = this.props;
 
     return (
       <Bg_view flex>
-        <Header title="Image" close_fn={toggle} />
+        <Header title={title || 'Image'} close_fn={toggle} />
 
         <Bg_view flex style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image

@@ -23,6 +23,7 @@ import Ongoing_transactions from '../Components/ongoing_transactions';
 import Text_btn from '../Components/Text_btn';
 import Line from '../Components/line';
 import Wallet from '../Components/wallet';
+import Fulfil from '../Components/fulfil';
 
 class Home extends React.Component {
   constructor(props) {

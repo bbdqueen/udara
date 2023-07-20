@@ -32,6 +32,7 @@ class Registration extends React.Component {
     let {email} = this.state;
     return await post_request('request_otp', {
       email,
+      check_mail: true,
     });
   };
 
@@ -49,9 +50,10 @@ class Registration extends React.Component {
     let res = await this.request_code();
     this.setState({loading: false});
 
+    typeof res === 'string' &&
     res?.trim()?.toLowerCase() === email?.trim().toLowerCase()
       ? navigation.navigate('verification', {email, country_code})
-      : toast('Error, something went wrong.');
+      : toast(res?.message || 'Error, something went wrong.');
   };
 
   render = () => {
