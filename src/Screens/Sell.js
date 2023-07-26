@@ -272,9 +272,21 @@ class Sell extends React.Component {
             />
           </Bg_view>
 
+          {value * rate < 150 ? (
+            <Text_btn
+              bold
+              text="Value * Rate is less than 150"
+              italic
+              accent
+              centralise
+            />
+          ) : null}
+
           <Stretched_button
             disabled={
-              this.is_set() || (value > 500 && user.status !== 'verified')
+              value * rate < 150 ||
+              this.is_set() ||
+              (value > 500 && user.status !== 'verified')
             }
             title="place sale"
             action={this.place_sale}

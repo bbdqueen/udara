@@ -20,7 +20,7 @@ const Header = ({title, close_fn, no_transform, right_btn, navigation}) => {
         />
       </View>
       <View style={{flex: right_btn ? 4 : 7, alignItems: 'center'}}>
-        <Fr_text capitalise={!no_transform} bold size={wp(4.5)}>
+        <Fr_text centralise capitalise={!no_transform} bold size={wp(4.5)}>
           {`  ${title}`}
         </Fr_text>
       </View>

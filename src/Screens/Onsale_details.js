@@ -15,15 +15,19 @@ import {capitalise} from '../utils/functions';
 import {post_request} from '../utils/services';
 import toast from '../utils/toast';
 import Verified_token from './verifed_token';
+import Text_btn from '../Components/Text_btn';
 
 class Onsale_details extends React.Component {
   constructor(props) {
     super(props);
 
     let {onsale} = this.props.route.params;
+    let {rate, value, not_ready_for_transaction} = onsale;
+
     this.state = {
-      offer_rate: String(onsale.rate),
-      amount: String(onsale.value),
+      offer_rate: String(rate),
+      amount: String(value),
+      not_ready_for_transaction,
     };
   }
 
@@ -98,7 +102,7 @@ class Onsale_details extends React.Component {
     let {route, navigation} = this.props;
     let {onsale, user} = route.params;
 
-    let {seller, alphabetic_name, value, offer_terms, flag} = onsale;
+    let {seller, alphabetic_name, value, offer_terms, rate, flag} = onsale;
 
     return (
       <Bg_view flex>
@@ -146,9 +150,10 @@ class Onsale_details extends React.Component {
             <Loadindicator />
           )}
 
-          {my_offers?.length &&
-          (not_ready_for_transaction ||
-            onsale.not_ready_for_transaction) ? null : (
+          {!my_offers ||
+          my_offers?.length ||
+          not_ready_for_transaction ||
+          onsale.not_ready_for_transaction ? null : (
             <>
               <Fr_text
                 centralise
@@ -210,7 +215,17 @@ class Onsale_details extends React.Component {
                   </View>
                 </Bg_view>
 
-                {amount && amount > 0 ? (
+                {amount * rate >= 150 ? null : (
+                  <Text_btn
+                    bold
+                    text="Amount * Rate is less than 150"
+                    italic
+                    accent
+                    centralise
+                  />
+                )}
+
+                {amount && amount > 0 && amount * rate >= 150 ? (
                   <Stretched_button
                     loading={sending_offer}
                     title="proceed"
