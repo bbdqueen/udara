@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import {emitter, User} from '../../Udara';
+import {ScrollView, StatusBar, View} from 'react-native';
+import {Admin_id, emitter, User} from '../../Udara';
 import Amount_to_sell from '../Components/amount_to_sell';
 import Bg_view from '../Components/Bg_view';
 import Buy from '../Components/buy';
@@ -17,13 +12,11 @@ import Loadindicator from '../Components/load_indicator';
 import Notification from '../Components/notification';
 import Quick_action from '../Components/quick_action';
 import {hp, wp} from '../utils/dimensions';
-import {commalise_figures} from '../utils/functions';
 import {post_request} from '../utils/services';
 import Ongoing_transactions from '../Components/ongoing_transactions';
 import Text_btn from '../Components/Text_btn';
 import Line from '../Components/line';
 import Wallet from '../Components/wallet';
-import Fulfil from '../Components/fulfil';
 
 class Home extends React.Component {
   constructor(props) {
@@ -56,10 +49,14 @@ class Home extends React.Component {
     emitter.listen('new_transaction', this.new_transaction);
     emitter.listen('transaction_mounted', this.transaction_mounted);
 
-    let notifications = await post_request(`notifications/${this.user._id}`, {
-      unseen: true,
-      limit: 5,
-    });
+    let notifications =
+      (await post_request(
+        `notifications/${this.user.is_admin ? Admin_id : this.user._id}`,
+        {
+          unseen: true,
+          limit: 5,
+        },
+      )) || [];
 
     this.new_sale = () => this.toggle_sell();
 

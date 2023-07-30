@@ -503,8 +503,9 @@ class Udara extends React.Component {
     this.send_message = async ({message, chat}) => {
       let data = {to: message.to, chat, message},
         event = 'message';
-      if (this.sock) this.sock.emit(event, data);
-      else {
+      if (this.sock && this.sock.connected) {
+        this.sock.emit(event, data);
+      } else {
         // this.pending_payloads.push({event, data});
         await post_request('direct_message', data);
 

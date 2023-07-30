@@ -57,6 +57,8 @@ class Two_factor_auth_login extends React.Component {
       code: code?.trim(),
     });
 
+    // return emitter.emit('logged_in', {user, wallet});
+
     if (res?.user || res?.email) {
       emitter.emit('logged_in', {user, wallet});
     } else toast(res?.message || 'Email verification failed');

@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {emitter, Sock_offer_status, User} from '../../Udara';
+import {Admin_id, emitter, Sock_offer_status, User} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Fr_text from '../Components/Fr_text';
 import Header from '../Components/header';
@@ -48,6 +48,12 @@ class Chat extends React.Component {
   componentDidMount = async () => {
     let {route} = this.props;
     let {onsale, user, offer} = route.params;
+    if (!user) {
+      if (this.loggeduser.is_admin || offer?.user?._id === this.loggeduser._id)
+        user = offer?.user?._id;
+      else user = onsale?.seller?._id;
+    }
+
     let chat = await post_request('chat', {
         onsale: onsale._id,
         offer: offer._id,
@@ -55,14 +61,20 @@ class Chat extends React.Component {
       }),
       messages;
 
+    if (user === offer?.user?._id) this.user = offer.user;
+    else this.user = onsale.seller;
+
     if (chat) {
       messages = await post_request('messages', {
         chat: chat._id,
-        user: this.loggeduser._id,
+        user,
         reset_pager: true,
       });
       this.other_person =
-        chat.from === this.loggeduser._id ? chat.to : chat.from;
+        chat.from === this.loggeduser._id ||
+        (chat.from === Admin_id && this.loggeduser.is_admin)
+          ? chat.to
+          : chat.from;
 
       messages = messages.map(msg => {
         if (msg.attachment)
@@ -75,7 +87,7 @@ class Chat extends React.Component {
 
       await post_request('clear_new_messages', {
         offer: offer._id,
-        user: this.loggeduser._id,
+        user: this.loggeduser.is_admin ? Admin_id : this.loggeduser._id,
       });
 
       emitter.emit('clear_new_messages', offer._id);
@@ -101,6 +113,7 @@ class Chat extends React.Component {
             att = this.props.route.params.offer;
           return att;
         });
+      if (messages.find(msg => msg.token === message.token)) return;
       messages = new Array(...messages, message);
       this.setState({messages}, () =>
         this.flat_list.scrollToOffset({offset: 0, animated: true}),
@@ -238,11 +251,12 @@ class Chat extends React.Component {
     if (file_base64) attachment = new Array(file_base64);
 
     if (!chat) {
-      this.other_person = this.loggeduser._id;
+      this.other_person = this.loggeduser.is_admin ? this.user?._id : Admin_id;
 
       chat = {
         offer: offer._id,
-        from: this.loggeduser._id,
+        from: this.loggeduser.is_admin ? Admin_id : this.loggeduser._id,
+        user: this.user?._id,
         to: this.other_person,
       };
       let res = await post_request('new_chat', chat);
@@ -262,8 +276,13 @@ class Chat extends React.Component {
       offer: offer._id,
       onsale: onsale._id,
       currency: onsale.currency,
-      from: this.loggeduser._id,
-      to: chat.to === this.loggeduser._id ? chat.from : chat.to,
+      token: Date.now(),
+      from: this.loggeduser.is_admin ? Admin_id : this.loggeduser._id,
+      to:
+        chat.to === this.loggeduser._id ||
+        (chat.to === Admin_id && this.loggeduser.is_admin)
+          ? chat.from
+          : chat.to,
       attachment,
       files: null,
       file_base64: null,
@@ -271,7 +290,8 @@ class Chat extends React.Component {
 
     emitter.emit('send_message', {message, chat}, msg => {
       let {messages} = this.state;
-      messages = new Array(...messages, msg);
+      if (!messages.find(mssg => msg.token === mssg.token))
+        messages = new Array(...messages, msg);
       this.setState(
         {
           messages,
@@ -762,9 +782,13 @@ class Chat extends React.Component {
                 <Bg_view flex>
                   <Header
                     no_transform
-                    title={`Purchase ${amount} ${alphabetic_name} from ${capitalise(
-                      seller.username,
-                    )}`}
+                    title={
+                      loggeduser.is_admin
+                        ? `Chat with ${this.user?.username || 'User'}`
+                        : `Purchase ${amount} ${alphabetic_name} from ${capitalise(
+                            seller.username,
+                          )}`
+                    }
                     navigation={navigation}
                   />
                   <Bg_view flex style={{paddingHorizontal: wp(2.8)}}>

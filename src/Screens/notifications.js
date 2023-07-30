@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView} from 'react-native';
-import {emitter, User} from '../../Udara';
+import {Admin_id, emitter, User} from '../../Udara';
 import Bg_view from '../Components/Bg_view';
 import Header from '../Components/header';
 import Icon from '../Components/Icon';
@@ -22,12 +22,13 @@ class Notifications extends React.Component {
   };
 
   refresh_notifications = async () => {
+    let user = this.user.is_admin ? Admin_id : this.user._id;
     toast('Refreshing...');
-    let notifications = await post_request(`notifications/${this.user._id}`);
+    let notifications = await post_request(`notifications/${user}`);
 
     this.setState({notifications});
 
-    await post_request(`notifications_seen/${this.user._id}`);
+    await post_request(`notifications_seen/${user}`);
     emitter.emit('seen_notification');
   };
 

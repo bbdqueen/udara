@@ -10,7 +10,7 @@ import Bg_view from './Bg_view';
 import Fr_text from './Fr_text';
 import Icon from './Icon';
 import Small_btn from './small_button';
-import {emitter, Is_admin, Sock_offer_status} from './../../Udara';
+import {Admin_id, emitter, Is_admin, Sock_offer_status} from './../../Udara';
 import {domain, post_request} from '../utils/services';
 import Text_btn from './Text_btn';
 import Cool_modal from './cool_modal';
@@ -208,8 +208,12 @@ class Offer extends React.Component {
     offer.status = this.state.status || offer.status;
 
     let params = {onsale, offer};
-    if (message)
-      params.user = message.to === Is_admin ? message.from : message.to;
+
+    params.user = message
+      ? message.to === Admin_id
+        ? message.from
+        : message.to
+      : offer.user._id;
 
     navigation.navigate('chat', params);
   };
