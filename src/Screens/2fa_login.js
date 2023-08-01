@@ -22,7 +22,7 @@ class Two_factor_auth_login extends React.Component {
 
     let email = user?.email;
 
-    this.state = {user, wallet, email, valid_code: email_regex.test(email)};
+    this.state = {user, wallet, email};
   }
 
   resend_otp = async () => {

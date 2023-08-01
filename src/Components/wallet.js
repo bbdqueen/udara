@@ -43,7 +43,7 @@ class Wallet extends React.Component {
                   style={{marginTop: hp(2)}}
                   size={wp(4)}
                   bold="600">
-                  Total balance
+                  {user.is_admin ? 'Escrow balance' : 'Total balance'}
                 </Fr_text>
                 <Fr_text color="#fff" bold="900" size={wp(6.5)}>
                   {`${
