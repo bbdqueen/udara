@@ -104,6 +104,7 @@ class Login extends React.Component {
     await AsyncStorage.removeItem('new_user');
     this.setState({loading: false});
 
+    console.log(result);
     if (result?.user) {
       if (new_user) {
         emitter.emit('logged_in', {user: result.user, wallet: result.wallet});
@@ -112,7 +113,7 @@ class Login extends React.Component {
           user: result.user,
           wallet: result.wallet,
         });
-    } else toast(result?.message || result || 'Cannot login at the moment.');
+    } else toast(result?.message || 'Cannot login at the moment.');
   };
 
   render = () => {

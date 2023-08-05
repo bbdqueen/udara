@@ -1,9 +1,9 @@
-let DEV = true;
+let DEV = false;
 let PRD = !DEV;
 
 let domain = `${
   PRD
-    ? 'https://mobile.udaralinksapp.com'
+    ? 'https://mobile.udaralinksapp.online'
     : false
     ? 'http://192.168.43.203:3600'
     : 'http://10.0.2.2:3600'
@@ -11,7 +11,7 @@ let domain = `${
 
 let sock_domain = DEV
   ? 'http://10.0.2.2:3602/'
-  : 'https://sock.udaralinksapp.com/';
+  : 'https://sock.udaralinksapp.online/';
 
 const get_request = async path => {
   if (path && path.startsWith('/')) path = path.slice(1);

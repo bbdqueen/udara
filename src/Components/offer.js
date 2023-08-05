@@ -205,17 +205,21 @@ class Offer extends React.Component {
 
   go_to_chat = () => {
     let {onsale, offer, message, navigation} = this.props;
-    offer.status = this.state.status || offer.status;
+    // offer.status = this.state.status || offer.status;
 
-    let params = {onsale, offer};
+    // let params = {onsale, offer};
 
-    params.user = message
-      ? message.to === Admin_id
-        ? message.from
-        : message.to
-      : offer.user._id;
+    // params.user = message
+    //   ? message.to === Admin_id
+    //     ? message.from
+    //     : message.to
+    //   : offer.user._id;
 
-    navigation.navigate('chat', params);
+    navigation.navigate('contact_admin', {
+      offer: offer._id,
+      onsale: onsale._id,
+      currency: onsale.currency,
+    });
   };
 
   dispute = () => {

@@ -58,6 +58,8 @@ import Manage_admins from './src/Screens/manage_admins';
 import Platform_reports from './src/Screens/platform_reports';
 import User_wallet from './src/Screens/user_wallet';
 import Previous_sales from './src/Screens/previous_sales';
+import Contact_admin from './src/Screens/Contact_admin';
+import Contact_message_sent from './src/Screens/Contact_message_sent';
 
 const User = React.createContext();
 
@@ -275,6 +277,10 @@ class App_stack_entry extends React.Component {
         <App_stack.Screen name="previous_sales" component={Previous_sales} />
         <App_stack.Screen name="create_admin" component={Create_admin} />
         <App_stack.Screen
+          name="admin_message_sent"
+          component={Contact_message_sent}
+        />
+        <App_stack.Screen
           name="platform_reports"
           component={Platform_reports}
         />
@@ -296,6 +302,7 @@ class App_stack_entry extends React.Component {
           component={Account_verification}
         />
         <App_stack.Screen name="disputes" component={Disputes} />
+        <App_stack.Screen name="contact_admin" component={Contact_admin} />
         <App_stack.Screen name="chat" component={Chat} />
         <App_stack.Screen name="buyer_offers" component={Buyer_offers} />
         <App_stack.Screen
