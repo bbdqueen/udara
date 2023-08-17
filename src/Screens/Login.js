@@ -104,7 +104,6 @@ class Login extends React.Component {
     await AsyncStorage.removeItem('new_user');
     this.setState({loading: false});
 
-    console.log(result);
     if (result?.user) {
       if (new_user) {
         emitter.emit('logged_in', {user: result.user, wallet: result.wallet});

@@ -1,15 +1,23 @@
 import React from 'react';
-import {KeyboardAvoidingView, ScrollView, TextInput} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Image,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import Bg_view from '../Components/Bg_view';
 import Fr_text from '../Components/Fr_text';
 import Header from '../Components/header';
-import Icon from '../Components/Icon';
 import Stretched_button from '../Components/Stretched_button';
 import Text_btn from '../Components/Text_btn';
 import {hp, wp} from '../utils/dimensions';
-import {post_request} from '../utils/services';
-import toast from '../utils/toast';
+import {domain, post_request} from '../utils/services';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 import {User} from '../../Udara';
+import Cool_modal from '../Components/cool_modal';
+import Image_preview from '../Components/image_preview';
 
 class Change_password extends React.Component {
   constructor(props) {
@@ -27,10 +35,35 @@ class Change_password extends React.Component {
     return !(title?.trim() && description?.trim() && !loading);
   };
 
+  toggle_proof_picker = async () => {
+    let files = await DocumentPicker.pick({
+      mode: 'open',
+      type: DocumentPicker.types.images,
+      allowMultiSelection: true,
+      readContent: true,
+    });
+    console.log(files?.length);
+
+    if (files && files[0]) {
+      let images = new Array();
+      for (let f = 0; f < files.length; f++)
+        images.push(await RNFS.readFile(files[f].uri, 'base64'));
+
+      this.setState({
+        files,
+        images,
+      });
+    }
+  };
+
+  toggle_image_preview = img => {
+    this.setState({img}, this.image_preview.toggle_show_modal);
+  };
+
   send = async () => {
     let {navigation, route} = this.props;
     let {offer, onsale, currency} = route.params;
-    let {title, description, loading} = this.state;
+    let {title, images, description, loading} = this.state;
 
     if (loading) return;
 
@@ -40,6 +73,7 @@ class Change_password extends React.Component {
       description,
       user: this.user._id,
       offer,
+      images,
       onsale,
       currency,
     };
@@ -57,7 +91,7 @@ class Change_password extends React.Component {
 
   render() {
     let {navigation} = this.props;
-    let {message, loading} = this.state;
+    let {message, images, img} = this.state;
 
     return (
       <User.Consumer>
@@ -138,6 +172,47 @@ class Change_password extends React.Component {
                         </Bg_view>
                       </Bg_view>
 
+                      <Text_btn
+                        accent
+                        bold
+                        centralise
+                        text={
+                          images?.length ? 'Update Images' : 'Upload Images'
+                        }
+                        action={this.toggle_proof_picker}
+                      />
+
+                      {images?.length ? (
+                        <Bg_view
+                          horizontal
+                          style={{alignItems: 'center', marginBottom: hp(2.4)}}>
+                          <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}>
+                            {images.map((img, i) => (
+                              <TouchableWithoutFeedback
+                                key={i}
+                                onPress={() => this.toggle_image_preview(img)}>
+                                <Image
+                                  source={
+                                    img.endsWith('.jpg')
+                                      ? {uri: `${domain}/Images/${img}`}
+                                      : {uri: `data:image/jpeg;base64,${img}`}
+                                  }
+                                  style={{
+                                    height: hp(20),
+                                    width: wp(40),
+                                    borderRadius: wp(2),
+                                    padding: wp(2.8),
+                                    marginRight: wp(2.8),
+                                  }}
+                                />
+                              </TouchableWithoutFeedback>
+                            ))}
+                          </ScrollView>
+                        </Bg_view>
+                      ) : null}
+
                       {message ? <Text_btn text={message} /> : null}
                     </Bg_view>
 
@@ -151,6 +226,17 @@ class Change_password extends React.Component {
                   </Bg_view>
                 </KeyboardAvoidingView>
               </ScrollView>
+
+              <Cool_modal
+                flex
+                height={hp()}
+                ref={image_preview => (this.image_preview = image_preview)}>
+                <Image_preview
+                  image={img}
+                  title="Transaction Proof"
+                  toggle={() => this.toggle_image_preview()}
+                />
+              </Cool_modal>
             </Bg_view>
           );
         }}
