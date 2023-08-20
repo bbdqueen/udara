@@ -92,6 +92,10 @@ class Generate_account_number extends React.Component {
                   <Text_btn
                     accent
                     text={payment_url}
+                    long_action={() => {
+                      payment_url && Clipboard.setString(payment_url);
+                      toast('Payment URL copied!');
+                    }}
                     bold
                     action={() => Linking.openURL(payment_url)}
                   />

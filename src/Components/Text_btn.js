@@ -15,9 +15,13 @@ const Text_btn = ({
   style,
   accent,
   italic,
+  long_action,
   icon,
 }) => (
-  <TouchableNativeFeedback disabled={disabled} onPress={action}>
+  <TouchableNativeFeedback
+    onLongPress={long_action}
+    disabled={disabled}
+    onPress={action}>
     <View
       style={{
         flexDirection: 'row',
