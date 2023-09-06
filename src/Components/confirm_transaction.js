@@ -9,6 +9,7 @@ import Line from './line';
 import Loadindicator from './load_indicator';
 import Offer from './offer';
 import Small_btn from './small_button';
+import toast from '../utils/toast';
 
 class Confirm_transaction extends React.Component {
   constructor(props) {
@@ -34,9 +35,10 @@ class Confirm_transaction extends React.Component {
       res
         ? emitter.emit('offer_confirmed', offer._id)
         : toast('Err, something went wrong.');
-      Sock_offer_status(offer._id, 'completed', onsale.seller?._id);
 
       close_modal();
+
+      Sock_offer_status(offer._id, 'completed', onsale.seller?._id);
     });
   };
 

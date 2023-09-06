@@ -75,7 +75,7 @@ class Withdraw extends React.Component {
 
     if (msg) {
       toast(msg);
-      return this.setState({loading: false});
+      return this.setState({loading: false, message: null});
     }
 
     try {
@@ -87,14 +87,18 @@ class Withdraw extends React.Component {
         paycheck,
       });
 
-      if (result && result.ok)
+      if (result?.ok)
         emitter.emit('withdraw', {
           value: Number(value),
           paycheck,
           transaction: result.transaction,
           currency,
         });
-      else toast('Err, Something went wrong.');
+      else {
+        result?.wallet && emitter.emit('refresh_wallet', wallet);
+        toast(result?.message || 'Err, Something went wrong.');
+        result?.message && this.setState({message, perhaps: result?.perhaps});
+      }
     } catch (e) {}
 
     decorator && decorator();
@@ -102,7 +106,15 @@ class Withdraw extends React.Component {
 
   render = () => {
     let {user, paycheck} = this.props;
-    let {value, valid, paycheck_account, bank_account, loading} = this.state;
+    let {
+      value,
+      valid,
+      perhaps,
+      paycheck_account,
+      message,
+      bank_account,
+      loading,
+    } = this.state;
 
     let disabled = !valid;
     if (paycheck) {
@@ -186,6 +198,19 @@ class Withdraw extends React.Component {
             />
           </Bg_view>
         )}
+
+        {message ? (
+          <Text_btn
+            italic
+            centralise
+            text={
+              perhaps
+                ? "It could be that your topup hasn't been fully processed. This usually take around 30 mins. T:messagery again."
+                : message
+            }
+          />
+        ) : null}
+
         <Stretched_button
           disabled={disabled}
           loading={loading}

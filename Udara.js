@@ -80,7 +80,7 @@ let sock;
 const Sock_offer_status = (offer, status, user) => {
   let payload = {offer, status};
 
-  sock && sock.emit('offer_status', {user, payload});
+  sock?.emit('offer_status', {user, payload});
 };
 
 class App_entry extends React.Component {
@@ -461,9 +461,11 @@ class Udara extends React.Component {
       this.setState({wallet});
     };
 
-    this.refresh_wallet = async () => {
+    this.refresh_wallet = async wallet => {
       toast('Refreshing wallet...');
-      let wallet = await get_request(`refresh_wallet/${this.state.wallet._id}`);
+      wallet = wallet?._id
+        ? wallet
+        : await get_request(`refresh_wallet/${this.state.wallet._id}`);
       wallet && wallet._id && this.setState({wallet});
     };
 
