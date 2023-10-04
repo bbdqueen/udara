@@ -13,9 +13,8 @@ import Small_btn from './small_button';
 import Text_btn from './Text_btn';
 import Image_preview from './image_preview';
 import {TouchableWithoutFeedback, Image} from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
 import Cool_modal from './cool_modal';
-import RNFS from 'react-native-fs';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 class Fulfil extends React.Component {
   constructor(props) {
@@ -25,18 +24,13 @@ class Fulfil extends React.Component {
   }
 
   toggle_proof_picker = async () => {
-    let files = await DocumentPicker.pick({
-      mode: 'open',
-      type: DocumentPicker.types.images,
-      allowMultiSelection: false,
-      readContent: true,
-    });
+    let files = await launchImageLibrary({includeBase64: true});
 
     files &&
       files[0] &&
       this.setState({
         files,
-        proof: await RNFS.readFile(files[0].uri, 'base64'),
+        proof: files.assets[0].base64,
       });
   };
 

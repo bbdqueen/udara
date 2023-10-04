@@ -14,11 +14,10 @@ import Image_preview from '../Components/image_preview';
 import Stretched_button from '../Components/Stretched_button';
 import Text_btn from '../Components/Text_btn';
 import {wp, hp} from '../utils/dimensions';
-import RNFS from 'react-native-fs';
-import DocumentPicker from 'react-native-document-picker';
 import {domain, post_request} from '../utils/services';
 import toast from '../utils/toast';
 import {emitter} from '../../Udara';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 class Account_verification extends React.Component {
   constructor(props) {
@@ -46,18 +45,12 @@ class Account_verification extends React.Component {
   };
 
   toggle_id_picker = async () => {
-    let files = await DocumentPicker.pick({
-      mode: 'open',
-      type: DocumentPicker.types.images,
-      allowMultiSelection: false,
-      readContent: true,
-    });
+    let files = await launchImageLibrary({includeBase64: true});
 
     files &&
-      files[0] &&
       this.setState({
         files,
-        id: await RNFS.readFile(files[0].uri, 'base64'),
+        id: files.assets[0].base64,
       });
   };
 
@@ -100,7 +93,7 @@ class Account_verification extends React.Component {
 
   render() {
     let {navigation} = this.props;
-    let {country_code, id, id_type, loading} = this.state;
+    let {id, id_type, loading} = this.state;
 
     return (
       <Bg_view flex>
