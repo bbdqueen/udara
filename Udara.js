@@ -6,7 +6,7 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StatusBar, View} from 'react-native';
+import {SafeAreaView, StatusBar, View} from 'react-native';
 import Splash from './src/Screens/splash';
 import Onboarding from './src/Screens/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -620,26 +620,30 @@ class Udara extends React.Component {
           {logged === 'fetching' && !relogin ? (
             <Splash />
           ) : logged === true && !relogin ? (
-            <Bg_view flex>
-              <StatusBar backgroundColor="#eee" barStyle="dark-content" />
-              <User.Provider value={{...user, wallet}}>
-                <App_stack_entry user={user} />
-              </User.Provider>
-            </Bg_view>
+            <SafeAreaView style={{flex: 1}}>
+              <Bg_view flex>
+                <StatusBar backgroundColor="#eee" barStyle="dark-content" />
+                <User.Provider value={{...user, wallet}}>
+                  <App_stack_entry user={user} />
+                </User.Provider>
+              </Bg_view>
+            </SafeAreaView>
           ) : (
             <User.Provider value={{...user, wallet}}>
-              <App_entry
-                onboardings={this.onboardings}
-                init_screen={
-                  relogin
-                    ? 'relogin'
-                    : init_screen
-                    ? init_screen
-                    : signed_out
-                    ? 'login_et_signup'
-                    : 'onboarding'
-                }
-              />
+              <SafeAreaView style={{flex: 1}}>
+                <App_entry
+                  onboardings={this.onboardings}
+                  init_screen={
+                    relogin
+                      ? 'relogin'
+                      : init_screen
+                      ? init_screen
+                      : signed_out
+                      ? 'login_et_signup'
+                      : 'onboarding'
+                  }
+                />
+              </SafeAreaView>
             </User.Provider>
           )}
         </View>
