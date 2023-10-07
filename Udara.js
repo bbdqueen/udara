@@ -60,6 +60,7 @@ import User_wallet from './src/Screens/user_wallet';
 import Previous_sales from './src/Screens/previous_sales';
 import Contact_admin from './src/Screens/Contact_admin';
 import Contact_message_sent from './src/Screens/Contact_message_sent';
+import Withdraw from './src/Screens/Withdraw';
 
 const User = React.createContext();
 
@@ -289,6 +290,7 @@ class App_stack_entry extends React.Component {
         <App_stack.Screen name="offers" component={Offers} />
         <App_stack.Screen name="submit_dispute" component={Submit_dispute} />
         <App_stack.Screen name="dispute" component={Dispute} />
+        <App_stack.Screen name="withdraw" component={Withdraw} />
         <App_stack.Screen
           name="verification_requests"
           component={Verification_requests}

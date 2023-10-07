@@ -75,7 +75,7 @@ class Verification extends React.Component {
       emitter.emit('verified', {...verified, country_code});
       navigation.pop();
       navigation.navigate('congratulation', {
-        email,
+        email: email?.toLowerCase()?.trim(),
         user: verified.user._id,
         country_code,
       });

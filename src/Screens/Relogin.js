@@ -36,7 +36,7 @@ class Relogin extends React.Component {
     this.setState({loading: false});
     result && result.user
       ? emitter.emit('logged_in', {user: result.user, wallet: result.wallet})
-      : toast(result);
+      : toast(result?.message || result);
   };
 
   toggle_reveal_password = () =>

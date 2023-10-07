@@ -49,7 +49,16 @@ class Wallet extends React.Component {
     });
   };
 
-  withdraw = () => this.withdraw_modal?.toggle_show_modal();
+  withdraw = paycheck => {
+    let {navigation} = this.props;
+
+    navigation.navigate('withdraw', {
+      wallet: this.wallet,
+      user: this.user,
+      navigation,
+      paycheck,
+    });
+  };
 
   sell = () => this.cool_modal_sell_value?.toggle_show_modal();
 
@@ -117,7 +126,7 @@ class Wallet extends React.Component {
 
   toggle_to_currency = () => this.to_currency_modal?.toggle_show_modal();
 
-  paycheck = () => this.paycheck_modal?.toggle_show_modal();
+  paycheck = () => this.withdraw(true);
 
   set_to_currency = (to_currency, to_full) => {
     this.setState(
@@ -278,7 +287,8 @@ class Wallet extends React.Component {
                           </View>
                         </TouchableWithoutFeedback>
                       ) : (
-                        <TouchableWithoutFeedback onPress={this.withdraw}>
+                        <TouchableWithoutFeedback
+                          onPress={() => this.withdraw()}>
                           <View
                             style={{
                               padding: wp(5.6),

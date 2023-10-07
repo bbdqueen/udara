@@ -8,6 +8,8 @@ import Stretched_button from '../Components/Stretched_button';
 import {hp, wp} from '../utils/dimensions';
 import {phone_regex} from '../utils/functions';
 import {post_request} from '../utils/services';
+import Text_btn from '../Components/Text_btn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Congratulation extends React.Component {
   constructor(props) {
@@ -17,9 +19,9 @@ class Congratulation extends React.Component {
   }
 
   done = async () => {
-    let {navigation, route} = this.props;
-    let {user, country_code} = route.params;
-    let {username, phone} = this.state;
+    let {route} = this.props;
+    let {user, email} = route.params;
+    let {username, phone, password} = this.state;
 
     if (!phone_regex.test(phone) || !username) return;
 
@@ -29,11 +31,28 @@ class Congratulation extends React.Component {
 
     emitter.emit('update_user_data', {username, phone});
 
-    navigation.push('login', {country_code, user, new_user: true});
+    await post_request('update_password', {
+      key: password,
+      new_user: true,
+      user,
+    });
+
+    let result = await post_request('logging_in', {
+      email,
+      key: password,
+      new_user: true,
+    });
+
+    await AsyncStorage.removeItem('new_user');
+    this.setState({loading: false});
+
+    if (result?.user)
+      emitter.emit('logged_in', {user: result.user, wallet: result.wallet});
+    else toast(result?.message || 'Cannot login at the moment.');
   };
 
   render = () => {
-    let {username, phone, loading} = this.state;
+    let {username, phone, loading, password, show} = this.state;
 
     return (
       <Bg_view flex>
@@ -117,10 +136,48 @@ class Congratulation extends React.Component {
                   />
                 </Bg_view>
 
+                <Bg_view
+                  style={{
+                    height: hp(7.5),
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: wp(4),
+                    marginTop: hp(4),
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: wp(4),
+                    paddingRight: wp(2.8),
+                  }}>
+                  <TextInput
+                    placeholder="Password"
+                    placeholderTextColor="#ccc"
+                    secureTextEntry={!show}
+                    onChangeText={password => this.setState({password})}
+                    value={password}
+                    style={{
+                      flex: 1,
+                      fontSize: wp(4.5),
+                      color: '#28100B',
+                      marginRight: wp(1.4),
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </Bg_view>
+                <Bg_view style={{alignItems: 'flex-end'}}>
+                  <Text_btn
+                    accent
+                    text={show ? 'Hide' : 'Show'}
+                    action={() => this.setState({show: !show})}
+                  />
+                </Bg_view>
+                {password?.length < 6 ? (
+                  <Text_btn text="Password must be atleast 6 characters" />
+                ) : null}
+
                 <Stretched_button
                   title="done!"
                   loading={loading}
-                  disabled={!phone || !username}
+                  disabled={!phone || !username || password?.length < 6}
                   action={this.done}
                 />
               </Bg_view>
