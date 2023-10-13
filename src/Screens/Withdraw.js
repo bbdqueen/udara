@@ -64,7 +64,8 @@ class Withdraw extends React.Component {
 
   withdraw = async () => {
     this.setState({loading: true});
-    let {decorator, user, paycheck} = this.props.route.params;
+    let {route, navigation} = this.props;
+    let {user, paycheck} = route.params;
     let {value, currency, bank_account} = this.state;
 
     value = Number(value);
@@ -102,7 +103,7 @@ class Withdraw extends React.Component {
       }
     } catch (e) {}
 
-    decorator && decorator();
+    navigation.goBack();
   };
 
   render = () => {

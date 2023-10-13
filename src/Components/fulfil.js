@@ -27,7 +27,6 @@ class Fulfil extends React.Component {
     let files = await launchImageLibrary({includeBase64: true});
 
     files &&
-      files[0] &&
       this.setState({
         files,
         proof: files.assets[0].base64,
