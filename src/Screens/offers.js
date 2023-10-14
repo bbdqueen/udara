@@ -76,11 +76,7 @@ class Offers extends React.Component {
             Offers
           </Fr_text>
           <Text_btn
-            icon={
-              <Icon
-                icon={require('../../android/app/src/main/assets/Icons/forward_arrow_icon.png')}
-              />
-            }
+            icon={require('../../android/app/src/main/assets/Icons/forward_arrow_icon.png')}
             text={current_status}
             accent
             capitalise
